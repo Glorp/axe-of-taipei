@@ -1,0 +1,22 @@
+C-x C-e: evaluate Emacs Lisp-expression (cursor on end of line first maybe)
+
+Emacs Lisp-evaluating (start-lamb) should start the thing:
+(start-lamb)
+
+(start-stuff)
+
+
+A → A
+λx.x
+
+
+(A × B → C) → A → B → C
+λf.λa.λb.f (a, b)
+
+
+
+(A -> C) * (B -> C) -> A + B -> C
+λp.λs.case s of
+          left x => (fst p) x
+        | right x => (snd p) x
+
