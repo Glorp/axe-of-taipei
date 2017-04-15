@@ -43,7 +43,7 @@
     [(prod a b) (format "~a × ~a" (type-argstring a) (type-argstring b))]
     [(sum l r) (format "~a + ~a" (type-argstring l) (type-argstring r))]
     [(wild) "?"]
-    [(? symbol? s) (~a s)]))
+    [(ty s) (~a s)]))
 
 (define (type-argstring x)
   (match x

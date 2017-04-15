@@ -148,10 +148,6 @@
   (check "(A × B → C) → A → B → C"
          "λf.λa.λb.f (a, b)")
 
-  (draw (infer-map sequent->termstring
-                   (prove (: (lam 'p (lam 's (case (ref 's) 'l (app (fst (ref 'p)) (ref 'l)) 'r (app (snd (ref 'p)) (ref 'r)))))
-                             (fun (prod (fun 'a 'c) (fun 'b 'c)) (fun (sum 'a 'b) 'c))))))
-
   (check "(A -> C) * (B -> C) -> A + B -> C"
          "λp.λs.case s of left x => (fst p) x | right x => (snd p) x")
 

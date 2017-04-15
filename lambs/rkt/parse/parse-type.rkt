@@ -29,15 +29,17 @@
       (left-assoc sum res)])]))
 
 (define (read-type x)
-  (opt>
-   (read-type-list x)   
-   [type-l
+  (define res
     (opt>
-     (split-list funt? type-l)
-     [fun-split
+     (read-type-list x)   
+     [type-l
       (opt>
-       (opt-map sumify fun-split)
-       [funs (right-assoc fun funs)])])]))
+       (split-list funt? type-l)
+       [fun-split
+        (opt>
+         (opt-map sumify fun-split)
+         [funs (right-assoc fun funs)])])]))
+  (and (type? res) res))
 
 (define (read-type-list y)
   (define ((add-type x) rest-str)
@@ -68,7 +70,7 @@
                  [(cons w rest)
                   (opt>
                    (halp rest)
-                   [rest-list (cons (string->symbol w) rest-list)])])]))
+                   [rest-list (cons (ty (string->symbol w)) rest-list)])])]))
   (match (halp y)
     ['() #f]
     [x x]))

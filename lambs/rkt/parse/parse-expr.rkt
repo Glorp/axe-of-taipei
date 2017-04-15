@@ -54,12 +54,14 @@
                      split))]))
   
 (define (read-expr x)
-  (opt>
-   (read-expr-list x)
-   [expr-l
-    (match (case-expr expr-l)
-      [#f (expr-list->expr expr-l)]
-      [x x])]))
+  (define res
+    (opt>
+     (read-expr-list x)
+     [expr-l
+      (match (case-expr expr-l)
+        [#f (expr-list->expr expr-l)]
+        [x x])]))
+  (and (expr? res) res))
 
 (define (read-expr-list y)
   (define ((add-expr x) rest-str)
