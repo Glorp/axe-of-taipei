@@ -79,7 +79,7 @@
 
 
 (define (draw i)
-  (scale 3/2 (car (draw-inf-halp i))))
+  (car (draw-inf-halp i)))
 
 (module+ main
   (draw (infer "hei"

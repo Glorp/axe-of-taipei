@@ -3,11 +3,13 @@
 
 (require "img.rkt"
          "prove.rkt"
+         "config.rkt"
          "draw.rkt"
          "structs.rkt"
          "parse.rkt"
          "unparse.rkt"
-         "infer-structs.rkt")
+         "infer-structs.rkt"
+         2htdp/image)
 
 (define curdir (current-directory))
 (define dir (path->string (build-path curdir "img")))
@@ -27,9 +29,7 @@
     [(list ty exps ...)
      (cons ty (string-join exps "\n"))]))
 
-(define (repl1 s)
-  (with-handlers
-    ([(λ (_) #t) (λ (e) (exn-message e))])
+(define (repl1 s c)
     (match (string->ty/exp-strings s)
       [(cons ty exp)
        (match (parse-type ty)
@@ -38,16 +38,31 @@
                [#f (~a "could not parse expression: " exp)]
                [exp (match (prove (: exp ty))
                       [#f "nope"]
-                      [res (img (draw (infer-map sequent->typestring res)))])])])]
-      [#f (~a "bad input: " s)])))
+                      [res (img (scale (config-img-scale c) (draw (infer-map sequent->typestring res))))])])])]
+      [#f (~a "bad input: " s)]))
 
-(define (repl)
+(define (repl [c default-config])
   (write "repl repl :)")
-  (flush-output)
-  (let loop ()
+  (write-config c)
+  (let loop ([c c])
+    (flush-output)
     (define s (read))
     (newline)
-    (write (repl1 s))
-    (flush-output)
 
-    (loop)))
+    (with-handlers
+        ([(λ (_) #t)
+          (λ (e)
+            (write (exn-message e))
+            (loop c))])
+      
+      (cond [(and (string? s) (equal? #\# (string-ref (string-trim s) 0)))
+             (define in (open-input-string s))
+             (match* ((read in) (read in))
+               [('#:config x)
+                (define new-config (update-config c x))
+                (write "\nokay :)")
+                (loop new-config)])]
+                
+          [else
+           (write (repl1 s c))
+           (loop c)]))))
