@@ -1,5 +1,5 @@
 #lang racket
-(provide read-type)
+(provide parse-type)
 
 (require "../structs.rkt"
          "../opt.rkt"
@@ -28,7 +28,7 @@
      [res
       (left-assoc sum res)])]))
 
-(define (read-type x)
+(define (parse-type x)
   (define res
     (opt>
      (read-type-list x)   
@@ -54,7 +54,7 @@
            (opt> ((split #\)) (next x))
                  [(cons inside rest)
                   (opts>
-                   ((read-type inside) (halp rest))
+                   ((parse-type inside) (halp rest))
                    [(a d) (cons a d)])])]
           
           [((expect-string "->") x) => (add-type (funt))]

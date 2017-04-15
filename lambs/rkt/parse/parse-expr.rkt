@@ -1,5 +1,5 @@
 #lang racket
-(provide read-expr)
+(provide parse-expr)
 
 (require "../structs.rkt"
          "../opt.rkt"
@@ -53,7 +53,7 @@
                 (map (λ (l) (left-assoc appy l))
                      split))]))
   
-(define (read-expr x)
+(define (parse-expr x)
   (define res
     (opt>
      (read-expr-list x)
@@ -76,7 +76,7 @@
            (opt> ((split #\)) (next x))
                  [(cons inside rest)
                   (opts>
-                   ((read-expr inside) (halp rest))
+                   ((parse-expr inside) (halp rest))
                    [(a d) (cons a d)])])]
           
           [(equal? (str-current x) #\λ)
@@ -121,5 +121,5 @@
       ((expect-string ".") param-rest)
       [body
        (opt>
-        (read-expr body)
+        (parse-expr body)
         [l (lam (string->symbol param) l)])])])]))
