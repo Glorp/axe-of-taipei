@@ -4,17 +4,13 @@
 (setq lambda-homedir (file-name-as-directory (getenv "HOME")))
 (load (format "%slambs/init_lambs.el" lambda-homedir))
 (load (format "%slambs/repl.el" lambda-homedir))
+(load (format "%slambs/insertstuff.el" lambda-homedir))
 
 (set-language-environment "UTF-8")
 (setq-default indent-tabs-mode nil)
 
 (global-set-key [C-tab] 'dabbrev-expand)
-(global-set-key (kbd "C-d") (lambda () (interactive) (insert "\u225C")))
 (global-set-key (kbd "C-l") (lambda () (interactive) (insert "\u03bb")))
-(global-set-key (kbd "C-S-l") (lambda () (interactive) (insert "\u039b")))
-(global-set-key (kbd "C-p") (lambda () (interactive) (insert "\u03C0")))
-(global-set-key (kbd "C-S-p") (lambda () (interactive) (insert "\u03A0")))
-(global-set-key (kbd "C--") (lambda () (interactive) (insert "\u2192")))
 (global-set-key (kbd "C-x <up>") 'enlarge-window)
 (global-set-key (kbd "C-x <down>") 'shrink-window)
 (global-set-key (kbd "C-x <C-up>") 'enlarge-window)

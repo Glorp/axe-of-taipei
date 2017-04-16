@@ -4,12 +4,7 @@
 
 (horizontal-scroll-bar-mode 1)
 
-(global-set-key (kbd "C-d") (lambda () (interactive) (insert "\u225C")))
-(global-set-key (kbd "C-l") (lambda () (interactive) (insert "\u03bb")))
-(global-set-key (kbd "C-S-l") (lambda () (interactive) (insert "\u039b")))
-(global-set-key (kbd "C-p") (lambda () (interactive) (insert "\u03C0")))
-(global-set-key (kbd "C-S-p") (lambda () (interactive) (insert "\u03A0")))
-(global-set-key (kbd "C--") (lambda () (interactive) (insert "\u2192")))
+(global-set-key (kbd "M-\\") 'insertstuff)
 
 (defun get-string-from-file (filePath)
   "Return filePath's file content."
