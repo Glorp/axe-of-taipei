@@ -92,13 +92,10 @@
           [((expect-string "case") x) => (add-expr (cas))]
           [((expect-string "of") x) => (add-expr (of))]
           [((expect-string "left") x) => (add-expr (lef))]
-          [((expect-string "right") x) => (add-expr (rig))]          
+          [((expect-string "right") x) => (add-expr (rig))]
           [((expect-string "↪") x) => (add-expr (casething))]
           [((expect-string "=>") x) => (add-expr (casething))]
           [((expect-string "|") x) => (add-expr (bar))]
-
-         
-          
              
           [else
            (match (read-word x)
