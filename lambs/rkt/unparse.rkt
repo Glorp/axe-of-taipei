@@ -48,7 +48,7 @@
 (define (type-argstring x)
   (match x
     [(wild) (unparse-type x)]
-    [(? symbol?) (unparse-type x)]
+    [(ty _) (unparse-type x)]
     [_ (paren (unparse-type x))]))
 
 (define ((sequent->string term/type->string) s)
