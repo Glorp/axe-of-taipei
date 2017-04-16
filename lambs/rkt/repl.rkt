@@ -30,16 +30,23 @@
      (cons ty (string-join exps "\n"))]))
 
 (define (repl1 s c)
-    (match (string->ty/exp-strings s)
-      [(cons ty exp)
-       (match (parse-type ty)
-         [#f (~a "could not parse type: " ty)]
-         [ty (match (parse-expr exp)
-               [#f (~a "could not parse expression: " exp)]
-               [exp (match (prove (: exp ty))
-                      [#f "nope"]
-                      [res (img (scale (config-img-scale c) (draw (infer-map sequent->typestring res))))])])])]
-      [#f (~a "bad input: " s)]))
+  (match c
+    [(config scal f)
+     (define foo
+       (match f
+         ['typey sequent->typestring]
+         ['termy sequent->termstring]
+         [x 'welp]))
+     (match (string->ty/exp-strings s)
+       [(cons ty exp)
+        (match (parse-type ty)
+          [#f (~a "could not parse type: " ty)]
+          [ty (match (parse-expr exp)
+                [#f (~a "could not parse expression: " exp)]
+                [exp (match (prove (: exp ty))
+                       [#f "nope"]
+                       [res (img (scale scal (draw (infer-map foo res))))])])])]
+      [#f (~a "bad input: " s)])]))
 
 (define (repl [c default-config])
   (write "repl repl :)")
@@ -59,7 +66,7 @@
              (define in (open-input-string s))
              (match* ((read in) (read in))
                [('#:config x)
-                (define new-config (update-config c x))
+                (define new-config (sexpr->config x))
                 (write "\nokay :)")
                 (loop new-config)])]
                 

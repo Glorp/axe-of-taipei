@@ -1,27 +1,27 @@
 #lang racket
 (provide (struct-out config)
          default-config
-         update-config
-         config->list
+         sexpr->config
+         config->sexpr
          write-config)
 
-(struct config (img-scale) #:transparent)
-(define default-config (config 3/2))
+(struct config (scale foo) #:transparent)
+(define default-config (config 3/2 'typey))
 
-(define (update-config c x)
-  (match c
-    [(config old-img-scale)
-     (match x
-       [`(img-scale ,new-img-scale) (config new-img-scale)])]))
+(define (sexpr->config x)
+  (match x
+    [`((scale ,scale)
+       (foo ,foo))
+     (config scale foo)]))
 
-(define (config->list c)
+(define (config->sexpr c)
   (match c
-    [(config img-scale)
-     `((img-scale ,img-scale))]))
+    [(config scale foo)
+     `((scale ,scale)
+       (foo ,foo))]))
 
 (define (write-config c [out (current-output-port)])
-  (for ([x (config->list c)])
-    (write "\n" out)
-    (write (format "\n#:config ~a\n" x))
-    (write "\n" out)
-    (display "\n" out)))
+  (write "\n" out)
+  (write (format "\n#:config ~a\n" (config->sexpr c)))
+  (write "\n" out)
+  (display "\n" out))
