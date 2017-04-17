@@ -17,7 +17,7 @@
        [n (define iimg (txt n col 14))
           (overlay/xy rimg (image-width rimg) 10 iimg)])]))
 
-(define (draw-text s col)
+(define (draw-text s [col 'black])
   (beside (whitespace 2) (txt s col) (whitespace 2)))
 
 (define ((draw-coloured-sequent sequent->string) x)

@@ -3,19 +3,24 @@
          "draw.rkt"
          2htdp/image)
 
-(define hypothesis (infer "Γ, A ⊢ A" (rule "H")))
-(define weakening (infer "Γ, B ⊢ A" (rule "W") "Γ ⊢ A"))
+(define (infer c r . ps)
+  (inference (draw-text c)
+             (draw-rule r)
+             (map draw-text ps)))
 
-(define function-intro (infer "Γ ⊢ A → B" (rule "→I") "Γ, A ⊢ B"))
-(define function-elim (infer "Γ ⊢ B" (rule "→E") "Γ ⊢ A → B" "Γ ⊢ A"))
+(define hypothesis (infer "Γ, A ⊢ A" (rule "H" #f)))
+(define weakening (infer "Γ, B ⊢ A" (rule "W" #f) "Γ ⊢ A"))
 
-(define product-intro (infer "Γ ⊢ A × B" (rule "×I") "Γ ⊢ A" "Γ ⊢ B"))
+(define function-intro (infer "Γ ⊢ A → B" (rule "→I" #f) "Γ, A ⊢ B"))
+(define function-elim (infer "Γ ⊢ B" (rule "→E" #f) "Γ ⊢ A → B" "Γ ⊢ A"))
+
+(define product-intro (infer "Γ ⊢ A × B" (rule "×I" #f) "Γ ⊢ A" "Γ ⊢ B"))
 (define product-elim1 (infer "Γ ⊢ A" (rule "×E" "1") "Γ ⊢ A × B"))
 (define product-elim2 (infer "Γ ⊢ B" (rule "×E" "2") "Γ ⊢ A × B"))
 
 (define sum-intro1 (infer "Γ ⊢ A + B" (rule "+I" "1") "Γ ⊢ A"))
 (define sum-intro2 (infer "Γ ⊢ A + B" (rule "+I" "2") "Γ ⊢ B"))
-(define sum-elim (infer "Γ ⊢ C" (rule "+E") "Γ ⊢ A + B" "Γ, A ⊢ C" "Γ, B ⊢ C"))
+(define sum-elim (infer "Γ ⊢ C" (rule "+E" #f) "Γ ⊢ A + B" "Γ, A ⊢ C" "Γ, B ⊢ C"))
 
 
 (define-syntax-rule (draw-rules (r ...) ...)
