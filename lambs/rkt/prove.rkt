@@ -18,19 +18,19 @@
     
        ['()
         (inference (coloured (sequent context term/type) 'red)
-                   (rule "?" #f)
+                   (rule '? #f)
                    '())]
     
        [(list (: (? pred) t) xs ...)
         (inf-halp t
                   (sequent context term/type)
-                  (rule "H" #f))]
+                  (rule 'hypo #f))]
     
        [(list x xs ...)
         (define proof (lookup term/type xs))
         (inf-halp (proof-type proof)
                   (sequent context term/type)
-                  (rule "W" #f)
+                  (rule 'weak #f)
                   proof)])]))
 
 (define (proof-type p)
@@ -54,7 +54,7 @@
         (define proof (prove (: x r) (cons (: (ref p) d) context)))
         (inf-halp (fun d (proof-type proof))
                   (sequent context term/type)
-                  (rule "→I" #f)
+                  (intro 'fun #f)
                   proof)]
     
        [((prod a b) (pair f s))
@@ -62,7 +62,7 @@
         (define bproof (prove (: s b) context))
         (inf-halp (prod (proof-type aproof) (proof-type bproof))
                   (sequent context term/type)
-                  (rule "×I" #f)
+                  (intro 'prod #f)
                   aproof
                   bproof)]
 
@@ -70,14 +70,14 @@
         (define proof (prove (: l a) context))
         (inf-halp (sum (proof-type proof) b)
                   (sequent context term/type)
-                  (rule "+I" "1")
+                  (intro 'sum "1")
                   proof)]
 
        [((sum a b) (right r))
         (define proof (prove (: r b) context))
         (inf-halp (sum a (proof-type proof))
                   (sequent context term/type)
-                  (rule "+I" "2")
+                  (intro 'sum "2")
                   proof)]
     
        [(_ (ref s)) (lookup term/type context)]
@@ -86,14 +86,14 @@
         (define proof (prove (: x (prod expected (wild))) context))
         (inf-halp (prod-a (proof-type proof))
                   (sequent context term/type)
-                  (rule "×E" "1")
+                  (elim 'prod "1")
                   proof)]
     
        [(_ (snd x))
         (define proof (prove (: x (prod (wild) expected)) context))
         (inf-halp (prod-b (proof-type proof))
                   (sequent context term/type)
-                  (rule "×E" "1")
+                  (elim 'prod "1")
                   proof)]
 
        [(_ (case x lp l rp r))
@@ -102,7 +102,7 @@
         (define lt (sum-l t))
         (define rt (sum-r t))
         (inference (coloured (sequent context term/type) 'black)
-                   (rule "+E" #f)
+                   (elim 'sum #f)
                    (list proof
                          (prove (: l expected) (cons (: (ref lp) lt) context))
                          (prove (: r expected) (cons (: (ref rp) rt) context))))]
@@ -111,7 +111,7 @@
         (define fproof (prove (: f (fun (wild) expected)) context))
         (define aproof (prove (: a (fun-d (proof-type fproof))) context))
         (inference (coloured (sequent context term/type) 'black)
-                   (rule "→E" #f)
+                   (elim 'fun #f)
                    (list fproof aproof))]
                
     
@@ -127,7 +127,7 @@
   
   (define (check ty ex)
     (define str-proof (infer-map (draw-coloured-sequent sequent->termstring)
-                                 (λ (x) (draw-rule x 'black))
+                                 draw-rule
                                  (prooove ty ex)))
     (draw str-proof))
 

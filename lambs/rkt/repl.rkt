@@ -6,6 +6,7 @@
          "config.rkt"
          "draw.rkt"
          "structs.rkt"
+         "symbols.rkt"
          "parse.rkt"
          "unparse.rkt"
          "infer-structs.rkt"
@@ -32,10 +33,17 @@
 (define (repl1 s c)
   (match c
     [(config scal f)
-     (define foo
+     (define my-draw
        (match f
-         ['typey sequent->typestring]
-         ['termy sequent->termstring]
+         ['typey (λ (x) (draw (infer-map (draw-coloured-sequent sequent->typestring)
+                                         draw-rule
+                                         x)))]
+         ['termy (λ (x) (draw (infer-map (draw-coloured-sequent sequent->termstring)
+                                         draw-rule
+                                         x)))]
+         ['logicy (λ (x) (draw (infer-map (draw-coloured-sequent (λ (s) (sequent->typestring s logic-hash)))
+                                          (λ (r) (draw-rule r logic-hash))
+                                          x)))]
          [x 'welp]))
      (match (string->ty/exp-strings s)
        [(cons ty exp)
@@ -45,11 +53,8 @@
                 [#f (~a "could not parse expression: " exp)]
                 [exp (match (prove (: exp ty))
                        [#f "nope"]
-                       [res (img (scale scal (draw
-                                              (infer-map (draw-coloured-sequent foo)
-                                                         draw-rule
-                                                         res))))])])])]
-      [#f (~a "bad input: " s)])]))
+                       [res (img (scale scal (my-draw res)))])])])]
+       [#f (~a "bad input: " s)])]))
 
 (define (repl [c default-config])
   (write-config c)

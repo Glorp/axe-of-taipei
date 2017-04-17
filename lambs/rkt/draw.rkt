@@ -5,17 +5,22 @@
          draw-text)
 
 (require "infer-structs.rkt"
+         "symbols.rkt"
          2htdp/image)
 
-(define (draw-rule r [col 'black])
+(define (draw-rule r [h type-hash] [col 'black])
+  (define (halp name num)
+    (define rimg (txt name col))
+    (match num
+      [#f rimg]
+      [n (define iimg (txt n col 14))
+         (overlay/xy rimg (image-width rimg) 10 iimg)]))
+
   (match r
-    [#f (txt " " col)]
-    [(rule name num)
-     (define rimg (txt name col))
-     (match num
-       [#f rimg]
-       [n (define iimg (txt n col 14))
-          (overlay/xy rimg (image-width rimg) 10 iimg)])]))
+    [#f (halp " " #f)]
+    [(rule s num) (halp (hash-ref h s) num)]
+    [(intro s num) (halp (~a (hash-ref h s) "I") num)]
+    [(elim s num) (halp (~a (hash-ref h s) "E") num)]))
 
 (define (draw-text s [col 'black])
   (beside (whitespace 2) (txt s col) (whitespace 2)))
