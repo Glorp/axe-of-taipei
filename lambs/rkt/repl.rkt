@@ -45,7 +45,10 @@
                 [#f (~a "could not parse expression: " exp)]
                 [exp (match (prove (: exp ty))
                        [#f "nope"]
-                       [res (img (scale scal (draw (infer-map foo res))))])])])]
+                       [res (img (scale scal (draw
+                                              (infer-map (draw-coloured-sequent foo)
+                                                         draw-rule
+                                                         res))))])])])]
       [#f (~a "bad input: " s)])]))
 
 (define (repl [c default-config])

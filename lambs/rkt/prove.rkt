@@ -17,25 +17,25 @@
      (match context
     
        ['()
-        (infer (sequent context term/type)
-               (rule "?")
-               #:color 'red)]
+        (inference (coloured (sequent context term/type) 'red)
+                   (rule "?" #f)
+                   '())]
     
        [(list (: (? pred) t) xs ...)
         (inf-halp t
                   (sequent context term/type)
-                  (rule "H"))]
+                  (rule "H" #f))]
     
        [(list x xs ...)
         (define proof (lookup term/type xs))
         (inf-halp (proof-type proof)
                   (sequent context term/type)
-                  (rule "W")
+                  (rule "W" #f)
                   proof)])]))
 
 (define (proof-type p)
   (match p
-    [(inf (sequent _ (: _ t)) _ _ _) t]))
+    [(inference (coloured (sequent _ (: _ t)) _) _ _) t]))
 
 (define (inf-halp found seq rule . ps)
   (match seq
@@ -43,7 +43,7 @@
      (define unif (unify expected found))
      (define new-type (if unif unif expected))
      (define col (if unif 'black 'red))
-     (apply infer (sequent as (: exp new-type)) rule #:color col ps)]))
+     (inference (coloured (sequent as (: exp new-type)) col) rule  ps)]))
 
 (define (prove term/type [context '()])
   
@@ -54,7 +54,7 @@
         (define proof (prove (: x r) (cons (: (ref p) d) context)))
         (inf-halp (fun d (proof-type proof))
                   (sequent context term/type)
-                  (rule "→I")
+                  (rule "→I" #f)
                   proof)]
     
        [((prod a b) (pair f s))
@@ -62,7 +62,7 @@
         (define bproof (prove (: s b) context))
         (inf-halp (prod (proof-type aproof) (proof-type bproof))
                   (sequent context term/type)
-                  (rule "×I")
+                  (rule "×I" #f)
                   aproof
                   bproof)]
 
@@ -101,33 +101,34 @@
         (define t (proof-type proof))
         (define lt (sum-l t))
         (define rt (sum-r t))
-        (infer (sequent context term/type)
-               (rule "+E")
-               proof
-               (prove (: l expected) (cons (: (ref lp) lt) context))
-               (prove (: r expected) (cons (: (ref rp) rt) context)))]
+        (inference (coloured (sequent context term/type) 'black)
+                   (rule "+E" #f)
+                   (list proof
+                         (prove (: l expected) (cons (: (ref lp) lt) context))
+                         (prove (: r expected) (cons (: (ref rp) rt) context))))]
 
        [(_ (app f a))
         (define fproof (prove (: f (fun (wild) expected)) context))
         (define aproof (prove (: a (fun-d (proof-type fproof))) context))
-        (infer (sequent context term/type)
-               (rule "→E")
-               fproof
-               aproof)]
+        (inference (coloured (sequent context term/type) 'black)
+                   (rule "→E" #f)
+                   (list fproof aproof))]
                
     
        [(_ _)
         (and
-         (infer (sequent context term/type)
-                (rule "?")
-                #:color 'red))])]))
+         (inference (coloured (sequent context term/type) 'red)
+                    (rule "?" #f)
+                    '()))])]))
 
 (module+ main
   (define (prooove ty ex)
     (prove (: (parse-expr ex) (parse-type ty))))
   
   (define (check ty ex)
-    (define str-proof (infer-map sequent->termstring (prooove ty ex)))
+    (define str-proof (infer-map (draw-coloured-sequent sequent->termstring)
+                                 (λ (x) (draw-rule x 'black))
+                                 (prooove ty ex)))
     (draw str-proof))
 
   (check "A -> A + B"

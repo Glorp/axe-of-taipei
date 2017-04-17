@@ -1,20 +1,16 @@
 #lang racket
-(provide (struct-out rul)
-         rule
-         (struct-out inf)
-         infer
+(provide (struct-out rule)
+         (struct-out inference)
+         (struct-out coloured)
          infer-map)
 
-(struct rul (r i) #:transparent)
+(struct rule (name number) #:transparent)
 
-(define (rule r (i #f))
-  (rul r i))
+(struct coloured (thing colour) #:transparent)
 
-(struct inf (c r ps color) #:transparent)
-(define (infer c r #:color [color 'black] . ps)
-  (inf c r ps color))
+(struct inference (conclusion rule premises) #:transparent)
 
-(define (infer-map f i)
+(define (infer-map cf rf i)
   (match i
-    [(inf c r ps color)
-     (inf (f c) r (map (λ (x) (infer-map f x)) ps) color)]))
+    [(inference c r ps)
+     (inference (cf c) (rf r) (map (λ (x) (infer-map cf rf x)) ps))]))

@@ -1,8 +1,32 @@
 #lang racket
-(provide draw)
+(provide draw
+         draw-rule
+         draw-coloured-sequent
+         draw-text)
 
 (require "infer-structs.rkt"
          2htdp/image)
+
+(define (draw-rule r [col 'black])
+  (match r
+    [#f (txt " " col)]
+    [(rule name num)
+     (define rimg (txt name col))
+     (match num
+       [#f rimg]
+       [n (define iimg (txt n col 14))
+          (overlay/xy rimg (image-width rimg) 10 iimg)])]))
+
+(define (draw-text s col)
+  (beside (whitespace 2) (txt s col) (whitespace 2)))
+
+(define ((draw-coloured-sequent sequent->string) x)
+  (match x
+    [(coloured s c)
+     (draw-text (sequent->string s) c)]))
+
+(define (draw i)
+  (car (draw-inf-halp i)))
 
 (define (txt x col [size 20])
   (text/font x
@@ -12,18 +36,7 @@
              'roman
              'normal
              'normal
-             #f)
-  #;(text (~a x) size col))
-
-(define (draw-rule col rule)
-  (match rule
-    [#f (txt " " col)]
-    [(rul name num)
-     (define rimg (txt name col))
-     (match num
-       [#f rimg]
-       [n (define iimg (txt n col 14))
-          (overlay/xy rimg (image-width rimg) 10 iimg)])]))
+             #f))
 
 (define (whitespace w)
   (rectangle w 20 'solid (color 0 0 0 0)))
@@ -36,12 +49,8 @@
 
 (define (draw-inf-halp i)
   (match i
-    [(? string?)
-     (define c-img (beside (whitespace 2) (txt i 'black) (whitespace 2)))
-     (list c-img 0 0)]
-    [(inf c r ps col)
-     (define c-img (beside (whitespace 2) (txt c col) (whitespace 2)))
-     (define r-img (draw-rule col r))
+    
+    [(inference c-img r-img ps) 
      (match (map draw-inf-halp ps)
        [(list (list p-imgs p-insetls p-insetrs) ...)
         (define p-img (besidel (add-between p-imgs (whitespace 15))))
@@ -69,22 +78,25 @@
                                   empty
                                   (list (list p-img p-start 0)
                                         (list c-img c-start (+ (image-height p-img) 6)))))
-           (define prem/conc/rul (if r
+           (define prem/conc/rul (if r-img
                                      (foldl place-img
                                             prem/conc
-                                            (list (list r-img (+ line-end 4) (- (image-height p-img) 12))
-                                                  (list (line line-length 0 col) line-start (+ (image-height p-img) 3))))
+                                            (list (list r-img (+ line-end 4) (+ (image-height p-img) 2 (- (/ (image-height r-img) 2))))
+                                                  (list (line line-length 0 'black) line-start (+ (image-height p-img) 3))))
                                      prem/conc))
-           (list prem/conc/rul c-start (- (image-width empty) (+ c-start (image-width c-img))))])])]))
+           (list prem/conc/rul c-start (- (image-width empty) (+ c-start (image-width c-img))))])])]
+    
+    [img (list img 0 0)]))
 
-
-(define (draw i)
-  (car (draw-inf-halp i)))
 
 (module+ main
-  (draw (infer "hei"
-               (rule "moop" "2")
-               (infer "hei" (rule "moop" "2"))
-               (infer "hei" (rule "moop" "2"))
-               (infer "hei" (rule "moop" "2") #:color 'red (infer "hei" (rule "moop" "2")) (infer "hei" (rule "moop" "2"))))))
+  (draw (inference (beside (circle 10 'solid 'red)
+                           (circle 10 'solid 'black)
+                           (circle 10 'solid 'red))
+                   (circle 5 'solid 'red)
+                   (list (triangle 20 'solid 'blue)
+                         (inference (square 15 'solid 'yellow)
+                                    (flip-vertical (square 7 'solid 'yellow))
+                                    (list (ellipse 20 10 'solid 'green)
+                                          (star 17 'solid 'gray)))))))
     
