@@ -52,9 +52,8 @@
       [#f (~a "bad input: " s)])]))
 
 (define (repl [c default-config])
-  (write "repl repl :)")
   (write-config c)
-  (let loop ([c c])
+  (let loop ([it ":)"] [c c])
     (flush-output)
     (define s (read))
     (newline)
@@ -63,16 +62,19 @@
         ([(λ (_) #t)
           (λ (e)
             (write (exn-message e))
-            (loop c))])
+            (loop it c))])
       
       (cond [(and (string? s) (equal? #\# (string-ref (string-trim s) 0)))
              (define in (open-input-string s))
              (match* ((read in) (read in))
                [('#:config x)
                 (define new-config (sexpr->config x))
-                (write "\nokay :)")
-                (loop new-config)])]
+                (write "okay :)")
+                (loop it new-config)]
+               [('#:it x)
+                (write it)
+                (loop it c)])]
                 
           [else
            (write (repl1 s c))
-           (loop c)]))))
+           (loop s c)]))))

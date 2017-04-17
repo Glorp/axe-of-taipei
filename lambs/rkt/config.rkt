@@ -21,7 +21,4 @@
        (foo ,foo))]))
 
 (define (write-config c [out (current-output-port)])
-  (write "\n" out)
-  (write (format "\n#:config ~a\n" (config->sexpr c)))
-  (write "\n" out)
-  (display "\n" out))
+  (write (format "#:config ~a" (config->sexpr c))))

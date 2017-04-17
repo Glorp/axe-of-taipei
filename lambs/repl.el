@@ -70,17 +70,19 @@
       (let ((res (my-read reststring)))
         (if res
             (progn
+              (insert "\n")
               (pcase (car res)
                 (`(img ,s)
                  (progn
-                   (insert (format "\n(insert-pic %S)" s))
+                   (insert (format "(insert-pic %S)" s))
                    (insert-pic s)))
                 (s (insert s)))
               (setq reststring (cdr res)))
           (setq continue '()))))))
 
 (defun insert-pic (filename)
-  (insert "\n\n")
+  (insert "\n\n\n")
   (backward-char)
-  (insert-image (create-image (format "%slambs/img/%s" lambda-homedir filename))))
+  (insert-image (create-image (format "%slambs/img/%s" lambda-homedir filename)))
+  (forward-char))
   
