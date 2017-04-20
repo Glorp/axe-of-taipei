@@ -93,7 +93,7 @@
         (define proof (prove (: x (prod (wild) expected)) context))
         (inf-halp (prod-b (proof-type proof))
                   (sequent context term/type)
-                  (elim 'prod "1")
+                  (elim 'prod "2")
                   proof)]
 
        [(_ (case x lp l rp r))
