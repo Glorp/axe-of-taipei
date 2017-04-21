@@ -3,6 +3,7 @@ C-x C-e: evaluate Emacs Lisp-expression (cursor on end of line first maybe)
 Emacs Lisp-evaluating (start-lamb) should start the thing:
 (start-lamb "temp")
 
+#:slide test
 
 #:slide structural-rules
 
