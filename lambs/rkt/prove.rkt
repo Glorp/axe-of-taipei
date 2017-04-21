@@ -45,80 +45,83 @@
      (inference (coloured (sequent as (: exp new-type)) col) rule  ps)]))
 
 (define (prove term/type [context '()])
-  
   (match term/type
-    [(: exp expected)
-     (match* (expected exp)
-       [((fun d r) (lam p x))
-        (define proof (prove (: x r) (cons (: (ref p) d) context)))
-        (inf-halp (fun d (proof-type proof))
-                  (sequent context term/type)
-                  (intro 'fun #f)
-                  proof)]
+    [(: (lam p x) (fun d r))
+     (define proof (prove (: x r) (cons (: (ref p) d) context)))
+     (inf-halp (fun d (proof-type proof))
+               (sequent context term/type)
+               (intro 'fun #f)
+               proof)]
     
-       [((prod a b) (pair f s))
-        (define aproof (prove (: f a) context))
-        (define bproof (prove (: s b) context))
-        (inf-halp (prod (proof-type aproof) (proof-type bproof))
-                  (sequent context term/type)
-                  (intro 'prod #f)
-                  aproof
-                  bproof)]
+    [(: (pair f s) (prod a b))
+     (define aproof (prove (: f a) context))
+     (define bproof (prove (: s b) context))
+     (inf-halp (prod (proof-type aproof) (proof-type bproof))
+               (sequent context term/type)
+               (intro 'prod #f)
+               aproof
+               bproof)]
 
-       [((sum a b) (left l))
-        (define proof (prove (: l a) context))
-        (inf-halp (sum (proof-type proof) b)
-                  (sequent context term/type)
-                  (intro 'sum "1")
-                  proof)]
+    [(: (left l) (sum a b))
+     (define proof (prove (: l a) context))
+     (inf-halp (sum (proof-type proof) b)
+               (sequent context term/type)
+               (intro 'sum "1")
+               proof)]
+    
+    [(: (right r) (sum a b))
+     (define proof (prove (: r b) context))
+     (inf-halp (sum a (proof-type proof))
+               (sequent context term/type)
+               (intro 'sum "2")
+               proof)]
+    
+    [(: (ref s) _) (lookup term/type context)]
+    
+    [(: (fst x) expected)
+     (define proof (prove (: x (prod expected (wild))) context))
+     (inf-halp (prod-a (proof-type proof))
+               (sequent context term/type)
+               (elim 'prod "1")
+               proof)]
+    
+    [(: (snd x) expected)
+     (define proof (prove (: x (prod (wild) expected)) context))
+     (inf-halp (prod-b (proof-type proof))
+               (sequent context term/type)
+               (elim 'prod "2")
+               proof)]
 
-       [((sum a b) (right r))
-        (define proof (prove (: r b) context))
-        (inf-halp (sum a (proof-type proof))
-                  (sequent context term/type)
-                  (intro 'sum "2")
-                  proof)]
-    
-       [(_ (ref s)) (lookup term/type context)]
-    
-       [(_ (fst x))
-        (define proof (prove (: x (prod expected (wild))) context))
-        (inf-halp (prod-a (proof-type proof))
-                  (sequent context term/type)
-                  (elim 'prod "1")
-                  proof)]
-    
-       [(_ (snd x))
-        (define proof (prove (: x (prod (wild) expected)) context))
-        (inf-halp (prod-b (proof-type proof))
-                  (sequent context term/type)
-                  (elim 'prod "2")
-                  proof)]
+    [(: (case x lp l rp r) expected)
+     (define proof (prove (: x (sum (wild) (wild))) context))
+     (define t (proof-type proof))
+     (define lt (sum-l t))
+     (define rt (sum-r t))
+     
+     (define lproof (prove (: l expected) (cons (: (ref lp) lt) context)))
+     (define rproof (prove (: r expected) (cons (: (ref rp) rt) context)))
 
-       [(_ (case x lp l rp r))
-        (define proof (prove (: x (sum (wild) (wild))) context))
-        (define t (proof-type proof))
-        (define lt (sum-l t))
-        (define rt (sum-r t))
-        (inference (coloured (sequent context term/type) 'black)
-                   (elim 'sum #f)
-                   (list proof
-                         (prove (: l expected) (cons (: (ref lp) lt) context))
-                         (prove (: r expected) (cons (: (ref rp) rt) context))))]
-
-       [(_ (app f a))
-        (define fproof (prove (: f (fun (wild) expected)) context))
-        (define aproof (prove (: a (fun-d (proof-type fproof))) context))
-        (inference (coloured (sequent context term/type) 'black)
-                   (elim 'fun #f)
-                   (list fproof aproof))]
-               
+     (define unif1 (unify expected (proof-type lproof)))
+     (define unif2 (and unif1 (unify unif1 (proof-type rproof))))
+     
+     (inference (coloured (sequent context term/type) (if unif2 'black 'red))
+                (elim 'sum #f)
+                (list proof lproof rproof))]
     
-       [(_ _)
-        (and
-         (inference (coloured (sequent context term/type) 'red)
-                    (rule "?" #f)
-                    '()))])]))
+    [(: (app f a) expected)
+     (define fproof (prove (: f (fun (wild) expected)) context))
+     (define aproof (prove (: a (fun-d (proof-type fproof))) context))
+     
+     (inf-halp (fun-r (proof-type fproof))
+               (sequent context term/type)
+               (elim 'fun #f)
+               fproof
+               aproof)]
+    
+    [_
+     (inference (coloured (sequent context term/type) 'red)
+                (rule '? #f)
+                '())]))
 
 (module+ main
 
@@ -128,7 +131,7 @@
   (define (check ty ex)
     (draw-proof-typey (prove (: (parse-expr ex) (parse-type ty)))))
 
-  (check-txt "A -> A + B"
+  (check "A -> A + B"
          "λa.left a")
  
   (check "A → B → A"
@@ -150,7 +153,10 @@
          "λp.λs.case s of left x => (fst p) x | right x => (snd p) x")
 
   (check "(A -> C) * (B -> C) -> A + B -> C"
-         "λp.λs.case s of left x => (fst p) x | right x => (fst p) x"))
+         "λp.λs.case s of left x => (fst p) x | right x => (fst p) x")
+
+  (check "((A -> A) -> A -> A) -> ((A -> A) -> A -> A)"
+         "λn.λf.λx.f (n f x)"))
 
   
 

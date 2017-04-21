@@ -76,7 +76,10 @@
                  (progn
                    (insert (format "(insert-pic %S)" s))
                    (insert-pic s)))
-                (s (insert s)))
+                (s
+                 (progn
+                   (insert s)
+                   (insert "\n"))))
               (setq reststring (cdr res)))
           (setq continue '()))))))
 

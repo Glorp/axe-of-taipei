@@ -5,6 +5,12 @@ Emacs Lisp-evaluating (start-lamb) should start the thing:
 
 #:slide test
 
+#:slide sequents
+
+#:slide rules
+
+#:slide axioms
+
 #:slide structural-rules
 
 #:slide function-rules

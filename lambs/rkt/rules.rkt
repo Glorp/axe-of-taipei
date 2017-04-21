@@ -3,11 +3,11 @@
          fun-rules
          prod-rules
          sum-rules
-         draw-rules)
+         draw-rules
+         axioms)
 
 (require "infer-structs.rkt"
          "structs.rkt"
-         "draw.rkt"
          "draw-proof.rkt"
          2htdp/image)
 
@@ -90,8 +90,11 @@
   
   (apply above nothing (map draw-h rows)))
 
+(define axioms
+  (list (list hypothesis)))
+
 (define struct-rules
-  (list (list hypothesis weakening)))
+  (list (list weakening)))
 
 (define fun-rules
   (list (list function-intro)
