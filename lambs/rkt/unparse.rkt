@@ -6,6 +6,7 @@
          unparse-type
          sequent->string
          sequent->typestring
+         sequent->logicstring
          sequent->termstring)
 
 (define (paren s)
@@ -65,6 +66,9 @@
     (match x
       [(: _ t) (unparse-type t h)]))
   (sequent->string foo s))
+
+(define (sequent->logicstring s)
+  (sequent->typestring s logic-hash))
 
 (define (sequent->termstring s)
   (define (foo x)

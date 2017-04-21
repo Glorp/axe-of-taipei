@@ -127,7 +127,7 @@
   
   (define (check ty ex)
     (define img-proof (infer-map (draw-coloured-sequent sequent->termstring)
-                                 draw-rule
+                                 draw-type-rule
                                  (prooove ty ex)))
     (draw-proof img-proof))
 

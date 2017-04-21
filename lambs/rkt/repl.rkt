@@ -22,13 +22,13 @@
 (define (draw sym p)
   (match sym
     ['typey (draw-proof (infer-map (draw-coloured-sequent sequent->typestring)
-                                   draw-rule
+                                   draw-type-rule
                                    p))]
     ['termy (draw-proof (infer-map (draw-coloured-sequent sequent->termstring)
-                                   draw-rule
+                                   draw-type-rule
                                    p))]
-    ['logicy (draw-proof (infer-map (draw-coloured-sequent (λ (s) (sequent->typestring s logic-hash)))
-                                    (λ (r) (draw-rule r logic-hash))
+    ['logicy (draw-proof (infer-map (draw-coloured-sequent sequent->logicstring)
+                                    draw-logic-rule
                                     p))]
     [x (format "dunno how do draw thing ~a-like like..?" x)]))
 
