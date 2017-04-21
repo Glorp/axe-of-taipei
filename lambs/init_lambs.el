@@ -12,15 +12,6 @@
     (insert-file-contents filePath)
     (buffer-string)))
 
-(setq lambrackmode 'racket)
-
-(setq lambdabuffer "lambda")
-
-(defun lambd-print-string (str)
-  (pcase lambrackmode
-    ('racket (insert str))
-    ('stuff (rpl str))))
-
 (defun exec-lamb ()
   (interactive)
   (pcase (get-stuff)
@@ -35,27 +26,13 @@
   (interactive)
   (kill-process "lambdproc"))
 
-(defun start-stuff ()
-  (setq lambrackmode 'stuff)
+(defun start-lamb (imgdir)
+
   (setq reststring "")
-  (insert "\n")
-  (process-send-string "lambdproc" "(begin (require \"rkt/repl.rkt\") (repl))\n"))
 
-(defun start-lamb ()
-
-  (rename-buffer "lambda")
-  (setq lambrackmode 'racket)
-  (setq reststring "")
-  (setq lambdabuffer "lambda")
-
-  (start-process "lambdproc" (current-buffer) "racket")
+  (start-process "lambdproc" (current-buffer) "racket" "rkt/repl.rkt" imgdir)
   (set-process-filter (get-process "lambdproc")
                       (lambda (p s)
-                        (let ((v (get-buffer-window lambdabuffer)))
-                          (if v
-                              (with-selected-window v
-                                (lambd-print-string s))
-                            (with-current-buffer (get-buffer lambdabuffer)
-                              (lambd-print-string s))))))
+                        (rpl s)))
   (global-set-key (kbd "C-e") 'exec-lamb)
   (insert "\n"))

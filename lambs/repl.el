@@ -83,6 +83,6 @@
 (defun insert-pic (filename)
   (insert "\n\n\n")
   (backward-char)
-  (insert-image (create-image (format "%slambs/img/%s" lambda-homedir filename)))
+  (insert-image (create-image (format "%slambs/%s" lambda-homedir filename)))
   (forward-char))
   

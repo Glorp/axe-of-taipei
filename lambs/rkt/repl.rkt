@@ -12,12 +12,6 @@
          "infer-structs.rkt"
          2htdp/image)
 
-(define curdir (current-directory))
-(define dir (path->string (build-path curdir "img")))
-(make-directory* dir)
-
-(define img (make-image-cacher dir))
-
 (define (relative-path from to)
   (define res (path->string (find-relative-path (path-only from) to)))
   (string-replace res  "\\" "/"))
@@ -30,7 +24,7 @@
     [(list ty exps ...)
      (cons ty (string-join exps "\n"))]))
 
-(define (repl1 s c)
+(define (repl1 s c img)
   (match c
     [(config scal f)
      (define my-draw
@@ -56,7 +50,7 @@
                        [res (img (scale scal (my-draw res)))])])])]
        [#f (~a "bad input: " s)])]))
 
-(define (repl [c default-config])
+(define (repl img [c default-config])
   (write-config c)
   (let loop ([it ":)"] [c c])
     (flush-output)
@@ -71,15 +65,31 @@
       
       (cond [(and (string? s) (equal? #\# (string-ref (string-trim s) 0)))
              (define in (open-input-string s))
-             (match* ((read in) (read in))
-               [('#:config x)
-                (define new-config (sexpr->config x))
-                (write "okay :)")
-                (loop it new-config)]
-               [('#:it x)
+             (match (read in)
+               ['#:config
+                (define x (read in))
+                (cond [(eof-object? x)
+                       (write-config c)
+                       (loop it c)]
+                      [else
+                       (define new-config (sexpr->config x))
+                       (write "okay :)")
+                       (loop it new-config)])]
+               ['#:it
                 (write it)
-                (loop it c)])]
+                (loop it c)]
+               ['#:q (void)])]
                 
           [else
-           (write (repl1 s c))
+           (write (repl1 s c img))
            (loop s c)]))))
+
+(module+ main
+
+  (define img-dir
+    (match (current-command-line-arguments)
+      [(vector) "temp"]
+      [(vector x) x]))
+  (define img (make-image-cacher (current-directory) img-dir))
+
+  (repl img))
