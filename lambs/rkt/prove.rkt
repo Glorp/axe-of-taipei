@@ -126,10 +126,10 @@
     (prove (: (parse-expr ex) (parse-type ty))))
   
   (define (check ty ex)
-    (define str-proof (infer-map (draw-coloured-sequent sequent->termstring)
+    (define img-proof (infer-map (draw-coloured-sequent sequent->termstring)
                                  draw-rule
                                  (prooove ty ex)))
-    (draw str-proof))
+    (draw-proof img-proof))
 
   (check "A -> A + B"
          "λa.left a")

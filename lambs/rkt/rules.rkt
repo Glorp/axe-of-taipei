@@ -31,7 +31,7 @@
 (define-syntax-rule (draw-rules (r ...) ...)
   (above (rectangle 0 32 'solid (color 0 0 0 0))
          (beside (rectangle 32 0 'solid (color 0 0 0 0))
-                 (beside (above/align 'left (text (~a 'r) 14 'black) (rectangle 0 4 'solid (color 0 0 0 0)) (draw r) (rectangle 0 32 'solid (color 0 0 0 0)))
+                 (beside (above/align 'left (text (~a 'r) 14 'black) (rectangle 0 4 'solid (color 0 0 0 0)) (draw-proof r) (rectangle 0 32 'solid (color 0 0 0 0)))
                          (rectangle 32 0 'solid (color 0 0 0 0)))
                  ...)
          ...))

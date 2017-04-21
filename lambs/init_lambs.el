@@ -30,7 +30,7 @@
 
   (setq reststring "")
 
-  (start-process "lambdproc" (current-buffer) "racket" "rkt/repl.rkt" imgdir)
+  (start-process "lambdproc" (current-buffer) "racket" "repl.rkt" imgdir)
   (set-process-filter (get-process "lambdproc")
                       (lambda (p s)
                         (rpl s)))
