@@ -18,4 +18,5 @@
 (define (infer-map cf rf i)
   (match i
     [(inference c r ps)
-     (inference (cf c) (rf r) (map (λ (x) (infer-map cf rf x)) ps))]))
+     (inference (cf c) (rf r) (map (λ (x) (infer-map cf rf x)) ps))]
+    [x (cf x)]))

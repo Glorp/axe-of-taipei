@@ -2,57 +2,118 @@
 (provide struct-rules
          fun-rules
          prod-rules
-         sum-rules)
+         sum-rules
+         draw-rules)
 
 (require "infer-structs.rkt"
+         "structs.rkt"
          "draw.rkt"
+         "draw-proof.rkt"
          2htdp/image)
 
-(define (infer c r . ps)
-  (inference (draw-text c)
-             (draw-rule r)
-             (map draw-text ps)))
+(define (gamma x)
+  (define res (list (: (ref '_) (ty 'Γ))))
+  (if x
+      (cons (: (ref '_) (ty x)) res)
+      res))
 
-(define hypothesis (infer "Γ, A ⊢ A" (rule 'hypo #f)))
-(define weakening (infer "Γ, B ⊢ A" (rule 'weak #f) "Γ ⊢ A"))
+(define (seq x type)
+  (coloured (sequent (gamma x) (: (ref '_) type))
+            'black))
 
-(define function-intro (infer "Γ ⊢ A → B" (intro 'fun #f) "Γ, A ⊢ B"))
-(define function-elim (infer "Γ ⊢ B" (elim 'fun #f) "Γ ⊢ A → B" "Γ ⊢ A"))
+(define hypothesis
+  (inference (seq 'A (ty 'A)) (rule 'hypo #f) '()))
 
-(define product-intro (infer "Γ ⊢ A × B" (intro 'prod #f) "Γ ⊢ A" "Γ ⊢ B"))
-(define product-elim1 (infer "Γ ⊢ A" (elim 'prod "1") "Γ ⊢ A × B"))
-(define product-elim2 (infer "Γ ⊢ B" (elim 'prod "2") "Γ ⊢ A × B"))
-
-(define sum-intro1 (infer "Γ ⊢ A + B" (intro 'sum "1") "Γ ⊢ A"))
-(define sum-intro2 (infer "Γ ⊢ A + B" (intro 'sum "2") "Γ ⊢ B"))
-(define sum-elim (infer "Γ ⊢ C" (elim 'sum #f) "Γ ⊢ A + B" "Γ, A ⊢ C" "Γ, B ⊢ C"))
+(define weakening
+  (inference (seq 'B (ty 'A))
+             (rule 'weak #f)
+             (list (seq #f (ty 'A)))))
 
 
-(define-syntax-rule (draw-rules (r ...) ...)
-  (above (rectangle 0 32 'solid (color 0 0 0 0))
-         (beside (rectangle 32 0 'solid (color 0 0 0 0))
-                 (beside (above/align 'left (text (~a 'r) 14 'black) (rectangle 0 4 'solid (color 0 0 0 0)) (draw-proof r) (rectangle 0 32 'solid (color 0 0 0 0)))
-                         (rectangle 32 0 'solid (color 0 0 0 0)))
-                 ...)
-         ...))
 
+(define function-intro
+  (inference (seq #f (fun (ty 'A) (ty 'B)))
+             (intro 'fun #f)
+             (list (seq 'A (ty 'B)))))
+
+(define function-elim
+  (inference (seq #f (ty 'B))
+             (elim 'fun #f)
+             (list (seq #f (fun (ty 'A) (ty 'B)))
+                   (seq #f (ty 'A)))))
+
+
+
+(define product-intro
+  (inference (seq #f (prod (ty 'A) (ty 'B)))
+             (intro 'prod #f)
+             (list (seq #f (ty 'A))
+                   (seq #f (ty 'B)))))
+
+(define product-elim1
+  (inference (seq #f (ty 'A))
+             (elim 'prod "1")
+             (list  (seq #f (prod (ty 'A) (ty 'B))))))
+
+(define product-elim2
+  (inference (seq #f (ty 'A))
+             (elim 'prod "2")
+             (list (seq #f (prod (ty 'A) (ty 'B))))))
+
+(define sum-intro1
+  (inference (seq #f (sum (ty 'A) (ty 'B)))
+             (intro 'sum "1")
+             (list (seq #f (ty 'A)))))
+
+(define sum-intro2
+  (inference (seq #f (sum (ty 'A) (ty 'B)))
+             (intro 'sum "2")
+             (list (seq #f (ty 'B)))))
+
+(define sum-elim
+  (inference (seq #f (ty 'C))
+             (elim 'sum #f)
+             (list (seq #f (sum (ty 'A) (ty 'B)))
+                   (seq 'A (ty 'C))
+                   (seq 'B (ty 'C)))))
+
+(struct ruleset (name rows) #:transparent)
+
+(define (draw-rules rs [draw draw-proof-typey])
+  (match rs
+    [(ruleset name rows)
+     (define vspace (rectangle 0 12 'solid (color 0 0 0 0)))
+     (define hspace (rectangle 16 0 'solid (color 0 0 0 0)))
+     (define nothing (rectangle 0 0 'solid (color 0 0 0 0)))
+  
+     (define (draw-one r)
+       (beside hspace (draw r) hspace))
+  
+     (define (draw-h l)
+       (above vspace (apply beside nothing (map draw-one l)) vspace))
+
+     (above/align 'left (text name 20 'black)
+                  (rectangle 0 4 'solid (color 0 0 0 0))
+                  (apply above nothing (map draw-h rows)))]))
 
 (define struct-rules
-  (draw-rules (hypothesis weakening)))
+  (ruleset "structural"
+           (list (list hypothesis weakening))))
 
 (define fun-rules
-  (draw-rules (function-intro)
-              (function-elim)))
+  (ruleset "function/implication"
+           (list (list function-intro)
+                 (list function-elim))))
+
 
 (define prod-rules
-  (draw-rules (product-intro)
-              (product-elim1 product-elim2)))
+  (ruleset "product/conjunction"
+           (list (list product-intro)
+                 (list product-elim1 product-elim2))))
 
 (define sum-rules
-  (draw-rules (sum-intro1 sum-intro2)
-              (sum-elim)))
+  (ruleset "sum/disjunction"
+           (list (list sum-intro1 sum-intro2)
+                 (list sum-elim))))
 
 
-
-
-   

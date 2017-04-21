@@ -1,8 +1,7 @@
 #lang racket
 (provide repl)
 
-(require "img.rkt"
-         "prove.rkt"
+(require "prove.rkt"
          "config.rkt"
          "draw-proof.rkt"
          "structs.rkt"

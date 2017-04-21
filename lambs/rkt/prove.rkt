@@ -121,11 +121,14 @@
                     '()))])]))
 
 (module+ main
+
+  (define (check-txt ty ex)
+    (prove (: (parse-expr ex) (parse-type ty))))
   
   (define (check ty ex)
     (draw-proof-typey (prove (: (parse-expr ex) (parse-type ty)))))
 
-  (check "A -> A + B"
+  (check-txt "A -> A + B"
          "λa.left a")
  
   (check "A → B → A"
