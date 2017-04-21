@@ -1,4 +1,9 @@
 #lang racket
+(provide struct-rules
+         fun-rules
+         prod-rules
+         sum-rules)
+
 (require "infer-structs.rkt"
          "draw.rkt"
          2htdp/image)
@@ -31,11 +36,22 @@
                  ...)
          ...))
 
-(define rules-img
-  (draw-rules (hypothesis weakening)
-              (function-intro function-elim)
-              (product-intro product-elim1 product-elim2)
-              (sum-intro1 sum-intro2 sum-elim)))
+
+(define struct-rules
+  (draw-rules (hypothesis weakening)))
+
+(define fun-rules
+  (draw-rules (function-intro)
+              (function-elim)))
+
+(define prod-rules
+  (draw-rules (product-intro)
+              (product-elim1 product-elim2)))
+
+(define sum-rules
+  (draw-rules (sum-intro1 sum-intro2)
+              (sum-elim)))
+
 
 
 
