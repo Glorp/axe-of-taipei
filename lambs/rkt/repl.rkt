@@ -9,6 +9,7 @@
          "parse.rkt"
          "unparse.rkt"
          "infer-structs.rkt"
+         "slides.rkt"
          (only-in 2htdp/image scale image?))
 
 (define (string->ty/exp-strings s)
@@ -73,9 +74,16 @@
                           (define new-config (sexpr->config x))
                           (write "okay :)")
                           (loop it new-config)])]
+
+                  ['#:slide
+                   (for ([x (hash-ref slides (read in))])
+                     (write x))
+                   (loop it c)]
+                  
                   ['#:it
                    (write it)
                    (loop it c)]
+                  
                   ['#:q (void)])]
                
                [else

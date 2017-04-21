@@ -77,43 +77,33 @@
                    (seq 'A (ty 'C))
                    (seq 'B (ty 'C)))))
 
-(struct ruleset (name rows) #:transparent)
-
-(define (draw-rules rs [draw draw-proof-typey])
-  (match rs
-    [(ruleset name rows)
-     (define vspace (rectangle 0 12 'solid (color 0 0 0 0)))
-     (define hspace (rectangle 16 0 'solid (color 0 0 0 0)))
-     (define nothing (rectangle 0 0 'solid (color 0 0 0 0)))
+(define (draw-rules rows [draw draw-proof-typey])
+  (define vspace (rectangle 0 12 'solid (color 0 0 0 0)))
+  (define hspace (rectangle 16 0 'solid (color 0 0 0 0)))
+  (define nothing (rectangle 0 0 'solid (color 0 0 0 0)))
   
-     (define (draw-one r)
-       (beside hspace (draw r) hspace))
+  (define (draw-one r)
+    (beside hspace (draw r) hspace))
   
-     (define (draw-h l)
-       (above vspace (apply beside nothing (map draw-one l)) vspace))
-
-     (above/align 'left (text name 20 'black)
-                  (rectangle 0 4 'solid (color 0 0 0 0))
-                  (apply above nothing (map draw-h rows)))]))
+  (define (draw-h l)
+    (above vspace (apply beside nothing (map draw-one l)) vspace))
+  
+  (apply above nothing (map draw-h rows)))
 
 (define struct-rules
-  (ruleset "structural"
-           (list (list hypothesis weakening))))
+  (list (list hypothesis weakening)))
 
 (define fun-rules
-  (ruleset "function/implication"
-           (list (list function-intro)
-                 (list function-elim))))
+  (list (list function-intro)
+        (list function-elim)))
 
 
 (define prod-rules
-  (ruleset "product/conjunction"
-           (list (list product-intro)
-                 (list product-elim1 product-elim2))))
+  (list (list product-intro)
+        (list product-elim1 product-elim2)))
 
 (define sum-rules
-  (ruleset "sum/disjunction"
-           (list (list sum-intro1 sum-intro2)
-                 (list sum-elim))))
+  (list (list sum-intro1 sum-intro2)
+        (list sum-elim)))
 
 

@@ -4,6 +4,14 @@ Emacs Lisp-evaluating (start-lamb) should start the thing:
 (start-lamb "temp")
 
 
+#:slide structural-rules
+
+#:slide function-rules
+
+#:slide product-rules
+
+#:slide sum-rules
+
 
 A → A
 λx.x
