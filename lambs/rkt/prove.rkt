@@ -5,8 +5,7 @@
          "parse.rkt"
          "unparse.rkt"
          "infer-structs.rkt"
-         "draw.rkt"
-         "opt.rkt"
+         "draw-proof.rkt"
          "unify.rkt")
 
 (define (lookup term/type context)
@@ -122,14 +121,9 @@
                     '()))])]))
 
 (module+ main
-  (define (prooove ty ex)
-    (prove (: (parse-expr ex) (parse-type ty))))
   
   (define (check ty ex)
-    (define img-proof (infer-map (draw-coloured-sequent sequent->termstring)
-                                 draw-type-rule
-                                 (prooove ty ex)))
-    (draw-proof img-proof))
+    (draw-proof-typey (prove (: (parse-expr ex) (parse-type ty)))))
 
   (check "A -> A + B"
          "λa.left a")

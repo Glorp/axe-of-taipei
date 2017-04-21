@@ -1,5 +1,5 @@
 #lang racket
-(provide draw-proof
+(provide draw
          draw-type-rule
          draw-logic-rule
          draw-coloured-sequent
@@ -34,7 +34,7 @@
     [(coloured s c)
      (draw-text (sequent->string s) c)]))
 
-(define (draw-proof i)
+(define (draw i)
   (car (draw-inf-halp i)))
 
 (define (txt x col [size 20])
@@ -99,7 +99,7 @@
 
 
 (module+ main
-  (draw-proof (inference (beside (circle 10 'solid 'red)
+  (draw (inference (beside (circle 10 'solid 'red)
                            (circle 10 'solid 'black)
                            (circle 10 'solid 'red))
                    (circle 5 'solid 'red)

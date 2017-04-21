@@ -4,7 +4,7 @@
 (require "img.rkt"
          "prove.rkt"
          "config.rkt"
-         "draw.rkt"
+         "draw-proof.rkt"
          "structs.rkt"
          "symbols.rkt"
          "parse.rkt"
@@ -21,15 +21,9 @@
 
 (define (draw sym p)
   (match sym
-    ['typey (draw-proof (infer-map (draw-coloured-sequent sequent->typestring)
-                                   draw-type-rule
-                                   p))]
-    ['termy (draw-proof (infer-map (draw-coloured-sequent sequent->termstring)
-                                   draw-type-rule
-                                   p))]
-    ['logicy (draw-proof (infer-map (draw-coloured-sequent sequent->logicstring)
-                                    draw-logic-rule
-                                    p))]
+    ['typey (draw-proof-typey p)]
+    ['termy (draw-proof-termy p)]
+    ['logicy (draw-proof-logicy p)]
     [x (format "dunno how do draw thing ~a-like like..?" x)]))
 
 (define (repl1 draw-sym s)
