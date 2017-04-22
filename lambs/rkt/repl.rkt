@@ -39,7 +39,6 @@
     [#f (~a "bad input: " s)]))
 
 (define ((write-stuff img scal) x)
-  (define i (img x))
   (write 
    (cond [(image? x) (img (scale scal x))]
          [(string? x) x]
