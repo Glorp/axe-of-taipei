@@ -2,8 +2,8 @@
 (provide repl)
 
 (require "prove.rkt"
-         "config.rkt"
          "draw-proof.rkt"
+         (only-in "draw.rkt" draw-text)
          "structs.rkt"
          "symbols.rkt"
          "parse.rkt"
@@ -45,47 +45,54 @@
          [(string? x) x]
          [else (~a x)])))
 
-(define (repl img [c default-config])
-  (write-config c)
-  (let loop ([it ":)"] [c c])
-    (match c
-      [(config scal draw-sym)
-       (define write (write-stuff img scal))
-       
-       (flush-output)
-       (define s (read))
-       (newline)
-       
-       (with-handlers
-           ([(λ (_) #t)
-             (λ (e)
-               (write (exn-message e))
-               (loop it c))])
-         
-         (cond [(and (string? s) (equal? #\# (string-ref (string-trim s) 0)))
-                (define in (open-input-string s))
-                (match (read in)
-                  ['#:config
-                   (define x (read in))
-                   (cond [(eof-object? x)
-                          (write-config c)
-                          (loop it c)]
-                         [else
-                          (define new-config (sexpr->config x))
-                          (write "okay :)")
-                          (loop it new-config)])]
-
-                  ['#:slide
-                   (for ([x (hash-ref slides (read in))])
-                     (write x))
-                   (loop it c)]
-                  
-                  ['#:it
-                   (write it)
-                   (loop it c)]
-                  
-                  ['#:q (void)])]
+(define (repl img [scal 3/2] [draw-sym 'typey])
+  ((write-stuff img scal) (format "#:scale ~a~n~n#:drawings ~a" scal draw-sym))
+  (let loop ([it ":)"] [scal scal] [draw-sym draw-sym])
+    (define write (write-stuff img scal))
+    
+    (flush-output)
+    (define s (read))
+    (newline)
+    
+    (with-handlers
+        ([(λ (_) #t)
+          (λ (e)
+            (write (exn-message e))
+            (loop it scal draw-sym))])
+      
+      (cond [(and (string? s) (equal? #\# (string-ref (string-trim s) 0)))
+             (define in (open-input-string s))
+             (match (read in)
                
-               [else
-                (write (repl1 draw-sym s))
-                (loop s c)]))])))
+               ['#:scale
+                (define new-scal (read in))
+                (cond [(eof-object? new-scal)
+                       (write (format "#:scale ~a" scal))
+                       (loop it scal draw-sym)]
+                      [else
+                       ((write-stuff img new-scal) (draw-text (format "images will be scaled by ~a" new-scal)))
+                       (loop it new-scal draw-sym)])]
+               
+               ['#:drawings
+                (define new-draw-sym (read in))
+                (cond [(eof-object? new-draw-sym)
+                       (write (format "#:drawings ~a" draw-sym))
+                       (loop it scal draw-sym)]
+                      [else
+                       (write (format "okay :)"))
+                       (loop it scal new-draw-sym)])]
+               
+               ['#:slide
+                (for ([x (hash-ref slides (read in))])
+                  (write x))
+                (loop it scal draw-sym)]
+               
+               ['#:it
+                (write it)
+                (loop it scal draw-sym)]
+               
+               ['#:q (void)])]
+            
+            [else
+             (write (repl1 draw-sym s))
+             (loop s scal draw-sym)]))))
