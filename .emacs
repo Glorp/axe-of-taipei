@@ -8,6 +8,7 @@
 
 (set-language-environment "UTF-8")
 (setq-default indent-tabs-mode nil)
+(setq visible-bell 't)
 
 (global-set-key [C-tab] 'dabbrev-expand)
 (global-set-key (kbd "C-l") (lambda () (interactive) (insert "\u03bb")))
