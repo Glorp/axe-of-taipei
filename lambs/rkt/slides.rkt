@@ -15,6 +15,92 @@
                                (rule '? #f)
                                (list (coloured (sequent (list (: (ref '_) (ty '|MEEEP|))) (: (ref '_) (ty '|squee|))) 'black)))))))
 
+(define hypo-examples
+  (list
+   (draw-proof-typey
+    (inference (coloured (sequent (list (: (ref 'x) (ty 'A))) (: (ref 'x) (ty 'A))) 'black) (rule 'hypo #f) '()))
+   
+   (draw-proof-typey
+    (inference
+     (coloured (sequent (list (: (ref '_) (ty 'A))) (: (lam 'x (ref 'x)) (fun (ty 'B) (ty 'B)))) 'black)
+     (intro 'fun #f)
+     (list (inference (coloured (sequent (list (: (ref 'x) (ty 'B)) (: (ref '_) (ty 'A))) (: (ref 'x) (ty 'B))) 'black) (rule 'hypo #f) '()))))
+   
+   (draw-proof-typey
+    (inference
+     (coloured
+      (sequent
+       (list (: (ref 'x) (ty 'F)) (: (ref '_) (ty 'E)) (: (ref '_) (ty 'D)) (: (ref '_) (ty 'C)) (: (ref '_) (ty 'B)) (: (ref '_) (ty 'A)))
+       (: (ref 'x) (ty 'F)))
+      'black)
+     (rule 'hypo #f)
+     '()))))
+
+
+(define weakening-examples
+  (map draw-proof-typey
+       (list
+        
+        (inference
+         (coloured (sequent (list (: (ref 'x) (ty 'A))) (: (lam '_ (ref 'x)) (fun (ty 'B) (ty 'A)))) 'black)
+         (intro 'fun #f)
+         (list
+          (inference
+           (coloured (sequent (list (: (ref '_) (ty 'B)) (: (ref 'x) (ty 'A))) (: (ref 'x) (ty 'A))) 'black)
+           (rule 'weak #f)
+           (list (inference (coloured (sequent (list (: (ref 'x) (ty 'A))) (: (ref 'x) (ty 'A))) 'black) (rule 'hypo #f) '())))))
+        
+        (inference
+         (coloured
+          (sequent
+           (list (: (ref '_) (ty 'F)) (: (ref '_) (ty 'E)) (: (ref '_) (ty 'D)) (: (ref '_) (ty 'C)) (: (ref '_) (ty 'B)) (: (ref 'x) (ty 'A)))
+           (: (ref 'x) (ty 'A)))
+          'black)
+         (rule 'weak #f)
+         (list
+          (inference
+           (coloured
+            (sequent (list (: (ref '_) (ty 'E)) (: (ref '_) (ty 'D)) (: (ref '_) (ty 'C)) (: (ref '_) (ty 'B)) (: (ref 'x) (ty 'A))) (: (ref 'x) (ty 'A)))
+            'black)
+           (rule 'weak #f)
+           (list
+            (inference
+             (coloured (sequent (list (: (ref '_) (ty 'D)) (: (ref '_) (ty 'C)) (: (ref '_) (ty 'B)) (: (ref 'x) (ty 'A))) (: (ref 'x) (ty 'A))) 'black)
+             (rule 'weak #f)
+             (list
+              (inference
+               (coloured (sequent (list (: (ref '_) (ty 'C)) (: (ref '_) (ty 'B)) (: (ref 'x) (ty 'A))) (: (ref 'x) (ty 'A))) 'black)
+               (rule 'weak #f)
+               (list
+                (inference
+                 (coloured (sequent (list (: (ref '_) (ty 'B)) (: (ref 'x) (ty 'A))) (: (ref 'x) (ty 'A))) 'black)
+                 (rule 'weak #f)
+                 (list (inference (coloured (sequent (list (: (ref 'x) (ty 'A))) (: (ref 'x) (ty 'A))) 'black) (rule 'hypo #f) '())))))))))))
+        
+        (inference
+         (coloured
+          (sequent
+           (list (: (ref '_) (ty 'F)) (: (ref '_) (ty 'E)) (: (ref '_) (ty 'D)) (: (ref 'x) (ty 'C)) (: (ref '_) (ty 'B)) (: (ref '_) (ty 'A)))
+           (: (ref 'x) (ty 'C)))
+          'black)
+         (rule 'weak #f)
+         (list
+          (inference
+           (coloured
+            (sequent (list (: (ref '_) (ty 'E)) (: (ref '_) (ty 'D)) (: (ref 'x) (ty 'C)) (: (ref '_) (ty 'B)) (: (ref '_) (ty 'A))) (: (ref 'x) (ty 'C)))
+            'black)
+           (rule 'weak #f)
+           (list
+            (inference
+             (coloured (sequent (list (: (ref '_) (ty 'D)) (: (ref 'x) (ty 'C)) (: (ref '_) (ty 'B)) (: (ref '_) (ty 'A))) (: (ref 'x) (ty 'C))) 'black)
+             (rule 'weak #f)
+             (list
+              (inference
+               (coloured (sequent (list (: (ref 'x) (ty 'C)) (: (ref '_) (ty 'B)) (: (ref '_) (ty 'A))) (: (ref 'x) (ty 'C))) 'black)
+               (rule 'hypo #f)
+               '()))))))))))
+
+
 (define rules
   (draw (infer-map draw-text
                    draw-text
@@ -43,7 +129,9 @@
      (sequents . ,(list sequents))
      (rules . ,(list rules))
      (axioms . ,(list (draw-rules axioms)))
+     (hypo-examples . ,hypo-examples)
      (structural-rules . ,(list (draw-rules struct-rules)))
+     (weakening-examples . ,weakening-examples)
      (function-rules . ,(list (draw-rules fun-rules)))
      (product-rules . ,(list (draw-rules prod-rules)))
      (sum-rules . ,(list (draw-rules sum-rules))))))

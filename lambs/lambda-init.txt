@@ -11,7 +11,11 @@ Emacs Lisp-evaluating (start-lamb) should start the thing:
 
 #:slide axioms
 
+#:slide hypo-examples
+
 #:slide structural-rules
+
+#:slide weakening-examples
 
 #:slide function-rules
 

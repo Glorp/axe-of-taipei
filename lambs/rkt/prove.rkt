@@ -2,10 +2,7 @@
 (provide prove)
 
 (require "structs.rkt"
-         "parse.rkt"
-         "unparse.rkt"
-         "infer-structs.rkt"
-         "draw-proof.rkt"
+         "infer-structs.rkt"         
          "unify.rkt")
 
 (define (lookup term/type context)
@@ -124,6 +121,9 @@
                 '())]))
 
 (module+ main
+  (require "draw-proof.rkt"
+           "parse.rkt"
+           "unparse.rkt")
 
   (define (check-txt ty ex)
     (prove (: (parse-expr ex) (parse-type ty))))
