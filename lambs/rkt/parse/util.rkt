@@ -5,8 +5,7 @@
          read-word
          singleton-first)
 
-(require "../util.rkt"
-         "str.rkt")
+(require "str.rkt")
          
 (define (left-assoc constr l)
   (match l
@@ -38,7 +37,7 @@
        (not (member c delims))))
 
 (define (read-word x)
-  (define res ((>> skip-whites (gather id-char?)) x))
+  (define res ((compose (gather id-char?) skip-whites) x))
   (and (not (equal? (car res) ""))
        res))
 

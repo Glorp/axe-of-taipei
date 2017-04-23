@@ -1,11 +1,17 @@
-#lang racket
-(provide slides)
+#lang at-exp racket
+(provide slides
+         slide-list)
 
 (require "rules.rkt"
          "draw-proof.rkt"
          "draw.rkt"
          "infer-structs.rkt"
-         "structs.rkt")
+         "structs.rkt"
+         "parse.rkt"
+         "prove.rkt")
+
+(define (str-check ty ex)
+    (prove (: (parse-expr ex) (parse-type ty))))
 
 (define test-slide
   (draw-proof-typey
@@ -14,6 +20,10 @@
               (list (inference (coloured (sequent '() (: (ref '_) (ty 'MOOP))) 'green)
                                (rule '? #f)
                                (list (coloured (sequent (list (: (ref '_) (ty '|MEEEP|))) (: (ref '_) (ty '|squee|))) 'black)))))))
+
+(define a-proof
+  (str-check "((A -> C) * (B -> C)) -> (A + B) -> C"
+             "λp.λs.case s of left x => (fst p) x | right y => (snd p) y"))
 
 (define hypo-examples
   (list
@@ -109,30 +119,50 @@
                               (list "if this stuff is true")))))
 
 (define sequents
-  (string-join (list "P ⊢ Q"
-                     "\"from P I know Q\""
-                     ""
-                     "can be multiple things before the turnstile (⊢)"
-                     "O, P ⊢ Q"
-                     "\"from O *and* P I know Q\""
-                     ""
-                     "can't be multuple things after the turnstile"
-                     "(but if there could be, it'd be like"
-                     "O, P ⊢ Q, R"
-                     "\"from O *and* P I know Q *or* R\")")
-               "\n"))
+  @~a{
+ P ⊢ Q
+ "from P I know Q"
+ 
+ can be multiple things before the turnstile (⊢)
+ O, P ⊢ Q
+ "from O *and* P I know Q"
+ 
+ can't be multuple things after the turnstile
+ (but if there could be, it'd be like
+ O, P ⊢ Q, R
+ "from O *and* P I know Q *or* R")
+ })
+
+(define cheat
+  @~a{
+ A → A
+ λx.x
 
 
-(define slides
-  (make-immutable-hash
-   `((test . ,(list test-slide))
-     (sequents . ,(list sequents))
-     (rules . ,(list rules))
-     (axioms . ,(list (draw-rules axioms)))
-     (hypo-examples . ,hypo-examples)
-     (structural-rules . ,(list (draw-rules struct-rules)))
-     (weakening-examples . ,weakening-examples)
-     (function-rules . ,(list (draw-rules fun-rules)))
-     (product-rules . ,(list (draw-rules prod-rules)))
-     (sum-rules . ,(list (draw-rules sum-rules))))))
+ (A × B → C) → A → B → C
+ λf.λa.λb.f (a, b)
+
+
+
+ (A -> C) * (B -> C) -> A + B -> C
+ λp.λs.case s of
+           left x => (fst p) x
+         | right x => (snd p) x
+ })
+
+(define slide-list
+  `((test . ,(list test-slide))
+    (a-proof . ,(list (draw-proof-logicy a-proof)))
+    (sequents . ,(list sequents))
+    (rules . ,(list rules))
+    (axioms . ,(list (draw-rules axioms)))
+    (hypo-examples . ,hypo-examples)
+    (structural-rules . ,(list (draw-rules struct-rules)))
+    (weakening-examples . ,weakening-examples)
+    (function-rules . ,(list (draw-rules fun-rules)))
+    (product-rules . ,(list (draw-rules prod-rules)))
+    (sum-rules . ,(list (draw-rules sum-rules)))
+    (cheat . ,(list cheat))))
+
+(define slides (make-immutable-hash slide-list))
 

@@ -5,6 +5,8 @@ Emacs Lisp-evaluating (start-lamb) should start the thing:
 
 #:slide test
 
+#:slide a-proof
+
 #:slide sequents
 
 #:slide rules
@@ -22,19 +24,4 @@ Emacs Lisp-evaluating (start-lamb) should start the thing:
 #:slide product-rules
 
 #:slide sum-rules
-
-
-A → A
-λx.x
-
-
-(A × B → C) → A → B → C
-λf.λa.λb.f (a, b)
-
-
-
-(A -> C) * (B -> C) -> A + B -> C
-λp.λs.case s of
-          left x => (fst p) x
-        | right x => (snd p) x
 

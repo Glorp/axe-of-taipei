@@ -35,4 +35,9 @@
                       (lambda (p s)
                         (rpl s)))
   (global-set-key (kbd "C-e") 'exec-lamb)
+  (global-set-key (kbd "<M-up>")
+                  (lambda ()
+                    (interactive)
+                    (process-send-string "lambdproc" (format "%S\n" "#:it"))))
   (insert "\n"))
+

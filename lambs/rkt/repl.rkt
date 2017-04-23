@@ -64,27 +64,32 @@
              (match (read in)
                
                ['#:scale
-                (define new-scal (read in))
-                (cond [(eof-object? new-scal)
-                       (write (format "#:scale ~a" scal))
-                       (loop it scal draw-sym)]
-                      [else
-                       ((write-stuff img new-scal) (draw-text (format "images will be scaled by ~a" new-scal)))
-                       (loop it new-scal draw-sym)])]
+                (match (read in)
+                  [(? eof-object?)
+                   (write (format "#:scale ~a" scal))
+                   (loop it scal draw-sym)]
+                  [new-scal
+                   ((write-stuff img new-scal) (draw-text (format "images will be scaled by ~a" new-scal)))
+                   (loop it new-scal draw-sym)])]
                
                ['#:drawings
-                (define new-draw-sym (read in))
-                (cond [(eof-object? new-draw-sym)
-                       (write (format "#:drawings ~a" draw-sym))
-                       (loop it scal draw-sym)]
-                      [else
-                       (write (format "okay :)"))
-                       (loop it scal new-draw-sym)])]
+                (match (read in)
+                  [(? eof-object?)
+                   (write (format "#:drawings ~a" draw-sym))
+                   (loop it scal draw-sym)]
+                  [new-draw-sym
+                   (write (format "okay :)"))
+                   (loop it scal new-draw-sym)])]
                
                ['#:slide
-                (for ([x (hash-ref slides (read in))])
-                  (write x))
-                (loop it scal draw-sym)]
+                (match (read in)
+                  [(? eof-object?)
+                   (write (format "available slides: ~a" (map car slide-list)))
+                   (loop it scal draw-sym)]
+                  [name
+                   (for ([x (hash-ref slides name)])
+                     (write x))
+                   (loop it scal draw-sym)])]
                
                ['#:it
                 (write it)

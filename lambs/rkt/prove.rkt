@@ -122,8 +122,7 @@
 
 (module+ main
   (require "draw-proof.rkt"
-           "parse.rkt"
-           "unparse.rkt")
+           "parse.rkt")
 
   (define (check-txt ty ex)
     (prove (: (parse-expr ex) (parse-type ty))))

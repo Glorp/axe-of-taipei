@@ -5,11 +5,10 @@
 
 (require "parse/parse-expr.rkt"
          "parse/parse-type.rkt"
-         "parse/str.rkt"
-         "util.rkt")
+         "parse/str.rkt")
 
-(define parse-type-string (>> string->str parse-type))
-(define parse-expr-string (>> string->str parse-expr))
+(define parse-type-string (compose parse-type string->str))
+(define parse-expr-string (compose parse-expr string->str))
 
 (module+ test
   (require rackunit

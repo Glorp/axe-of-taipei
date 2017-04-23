@@ -12,8 +12,7 @@
          splitr
          next)
 
-(require "../util.rkt"
-         "../opt.rkt")
+(require "../opt.rkt")
 
 (struct str (s start stop) #:transparent)
 
@@ -47,7 +46,7 @@
            (str s to stop))]))
 
 (define (skip pred)
-  (>> (gather pred) cdr))
+  (compose cdr (gather pred)))
 
 (define skip-whites (skip char-whitespace?))
 
