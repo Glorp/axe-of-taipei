@@ -59,7 +59,11 @@
             (write (exn-message e))
             (loop it scal draw-sym))])
       
-      (cond [(and (string? s) (equal? #\# (string-ref (string-trim s) 0)))
+      (cond [(not (non-empty-string? s))
+             (write "beep boop")
+             (loop it scal draw-sym)]
+            
+            [(equal? #\# (string-ref (string-trim s) 0))
              (define in (open-input-string s))
              (match (read in)
                

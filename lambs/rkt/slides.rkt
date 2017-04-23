@@ -22,8 +22,8 @@
                                (list (coloured (sequent (list (: (ref '_) (ty '|MEEEP|))) (: (ref '_) (ty '|squee|))) 'black)))))))
 
 (define a-proof
-  (str-check "((A -> C) * (B -> C)) -> (A + B) -> C"
-             "λp.λs.case s of left x => (fst p) x | right y => (snd p) y"))
+  (str-check "((A * B) -> C) -> A -> B -> C"
+             "λf.λx.λy.f (x, y)"))
 
 (define hypo-examples
   (list
@@ -133,6 +133,47 @@
  "from O *and* P I know Q *or* R")
  })
 
+(define help
+  @~a{
+ C-e to send some stuff to the Racket-program.
+ Like put your cursor within the text you wanna send,
+ and have an empty line above and below.
+
+ E.g. put cursor within the text just below and do C-e:
+ 
+ A -> A
+ λx.x
+ 
+ 
+ Non-special things will be parsed and typechecked and so on.
+ Special commands begin with #
+ 
+ #:scale <n>
+ scale new images by a factor of <n>
+ 
+ #:scale
+ show current #:scale setting
+ 
+ #:drawings <x>
+ change how proof-things are drawn. <x> can be typey, termy, or logicy
+
+ #:drawings
+ show current #:drawing setting
+ 
+ #:slide <name>
+ show the slide named <name>
+ 
+ #:slide
+ show names of available slides
+ 
+ #:it
+ or <M-up>
+ insert the last type/expression-thing-text you sent to Racket
+ 
+ #:q
+ stop the Racket-thing
+ })
+
 (define cheat
   @~a{
  A → A
@@ -151,7 +192,8 @@
  })
 
 (define slide-list
-  `((test . ,(list test-slide))
+  `((help , (list help))
+    (test . ,(list test-slide))
     (a-proof . ,(list (draw-proof-logicy a-proof)))
     (sequents . ,(list sequents))
     (rules . ,(list rules))
