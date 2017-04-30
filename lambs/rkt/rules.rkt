@@ -56,7 +56,7 @@
              (list  (seq #f (prod (ty 'A) (ty 'B))))))
 
 (define product-elim2
-  (inference (seq #f (ty 'A))
+  (inference (seq #f (ty 'B))
              (elim 'prod "2")
              (list (seq #f (prod (ty 'A) (ty 'B))))))
 

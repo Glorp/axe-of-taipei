@@ -31,10 +31,7 @@
     (inference (coloured (sequent (list (: (ref 'x) (ty 'A))) (: (ref 'x) (ty 'A))) 'black) (rule 'hypo #f) '()))
    
    (draw-proof-typey
-    (inference
-     (coloured (sequent (list (: (ref '_) (ty 'A))) (: (lam 'x (ref 'x)) (fun (ty 'B) (ty 'B)))) 'black)
-     (intro 'fun #f)
-     (list (inference (coloured (sequent (list (: (ref 'x) (ty 'B)) (: (ref '_) (ty 'A))) (: (ref 'x) (ty 'B))) 'black) (rule 'hypo #f) '()))))
+    (inference (coloured (sequent (list (: (ref 'x) (ty 'B)) (: (ref '_) (ty 'A))) (: (ref 'x) (ty 'B))) 'black) (rule 'hypo #f) '()))
    
    (draw-proof-typey
     (inference
@@ -52,13 +49,9 @@
        (list
         
         (inference
-         (coloured (sequent (list (: (ref 'x) (ty 'A))) (: (lam '_ (ref 'x)) (fun (ty 'B) (ty 'A)))) 'black)
-         (intro 'fun #f)
-         (list
-          (inference
-           (coloured (sequent (list (: (ref '_) (ty 'B)) (: (ref 'x) (ty 'A))) (: (ref 'x) (ty 'A))) 'black)
-           (rule 'weak #f)
-           (list (inference (coloured (sequent (list (: (ref 'x) (ty 'A))) (: (ref 'x) (ty 'A))) 'black) (rule 'hypo #f) '())))))
+         (coloured (sequent (list (: (ref '_) (ty 'B)) (: (ref 'x) (ty 'A))) (: (ref 'x) (ty 'A))) 'black)
+         (rule 'weak #f)
+         (list (inference (coloured (sequent (list (: (ref 'x) (ty 'A))) (: (ref 'x) (ty 'A))) 'black) (rule 'hypo #f) '())))
         
         (inference
          (coloured
