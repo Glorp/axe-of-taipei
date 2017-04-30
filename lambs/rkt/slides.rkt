@@ -126,6 +126,70 @@
  "from O *and* P I know Q *or* R")
  })
 
+(define symbols
+  @~a{
+ ∧ is for conjunction, "and"
+ ∨ is for disjunction, "or"
+ ⊃ is for implication
+ })
+
+(define proptypes
+  @~a{
+ Propositions as Types
+ Philip Wadler
+ http://homepages.inf.ed.ac.uk/wadler/papers/propositions-as-types/propositions-as-types.pdf
+      
+ We can describe Howard’s observation as follows:
+
+ • Conjunction A & B corresponds to Cartesian product A × B,
+   that is, a record with two fields, also known as a pair. A proof
+   of the proposition A & B consists of a proof of A and a proof of
+   B. Similarly, a value of type A × B consists of a value of type
+   A and a value of type B.
+   
+ • Disjunction A ∨ B corresponds to a disjoint sum A + B, that
+   is, a variant with two alternatives. A proof of the proposition
+   A ∨ B consists of either a proof of A or a proof of B, including
+   an indication of which of the two has been proved. Similarly, a
+   value of type A + B consists of either a value of type A or a
+   value of type B, including an indication of whether this is a left
+   or right summand.
+   
+ • Implication A ⊃ B corresponds to function space A → B. A
+   proof of the proposition A ⊃ B consists of a procedure that
+   given a proof of A yields a proof of B. Similarly, a value of
+   type A → B consists of a function that when applied to a value
+   of type A returns a value of type B.
+})
+
+(define translation
+  @~a{
+ so,
+ instead of ⊃ we will write →
+ instead of ∧ (or &) we will write ×
+ instead of ∨ we will write +
+ })
+
+(define lang
+  @~a{
+ and we will program in a language that works something like,
+ Exp u :=
+   x                     variable
+   
+   λx.u                  abstraction, : A → B
+   u1 u2                 application
+   
+   (u1, u2)              pair/tuple, : A × B
+   fst u                 first projection
+   snd u                 second projection
+   
+   left u                left injection, A + B
+   right u               right injection, A + B
+   case u1 of            case analysis
+       left x1 => u2
+     | right x2 => u3
+ })
+
 (define help
   @~a{
  C-e to send some stuff to the Racket-program.
@@ -188,8 +252,12 @@
   `((help , (list help))
     (test . ,(list test-slide))
     (a-proof . ,(list (draw-proof-logicy a-proof)))
+    (symbols . ,(list symbols))
     (sequents . ,(list sequents))
     (rules . ,(list rules))
+    (proptypes . ,(list proptypes))
+    (translation . ,(list translation))
+    (lang . , (list lang))
     (axioms . ,(list (draw-rules axioms)))
     (hypo-examples . ,hypo-examples)
     (structural-rules . ,(list (draw-rules struct-rules)))

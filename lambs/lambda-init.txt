@@ -17,9 +17,17 @@ C-e with cursor on the #:slide help-line below for more instructions.
 
 #:slide a-proof
 
+#:slide symbols
+
 #:slide sequents
 
 #:slide rules
+
+#:slide proptypes
+
+#:slide translation
+
+#:slide lang
 
 #:slide axioms
 
