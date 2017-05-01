@@ -15,31 +15,97 @@ C-e with cursor on the #:slide help-line below for more instructions.
 
 #:slide test
 
+
+
 #:slide a-proof
+
+
 
 #:slide symbols
 
+
+
 #:slide sequents
+
+
 
 #:slide rules
 
+
+
 #:slide proptypes
+
+
 
 #:slide translation
 
+
+
+#:slide a-proof-typey
+
+
+
 #:slide lang
+
+
 
 #:slide axioms
 
+
+
 #:slide hypo-examples
+
+
 
 #:slide structural-rules
 
+
+
 #:slide weakening-examples
+
+
 
 #:slide function-rules
 
+
+
+#:slide function-example
+
+
+
 #:slide product-rules
 
+
+
 #:slide sum-rules
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

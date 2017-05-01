@@ -10,7 +10,7 @@
          "parse.rkt"
          "prove.rkt")
 
-(define (str-check ty ex)
+(define (parse-prove ty ex)
     (prove (: (parse-expr ex) (parse-type ty))))
 
 (define test-slide
@@ -22,8 +22,8 @@
                                (list (coloured (sequent (list (: (ref '_) (ty '|MEEEP|))) (: (ref '_) (ty '|squee|))) 'black)))))))
 
 (define a-proof
-  (str-check "((A * B) -> C) -> A -> B -> C"
-             "λf.λx.λy.f (x, y)"))
+  (parse-prove "((A * B) -> C) -> A -> B -> C"
+               "λf.λx.λy.f (x, y)"))
 
 (define hypo-examples
   (list
@@ -103,6 +103,12 @@
                (rule 'hypo #f)
                '()))))))))))
 
+(define function-example
+  (draw-proof-typey
+   (inference
+    (coloured (sequent '() (: (lam 'x (ref 'x)) (fun (ty 'A) (ty 'A)))) 'black)
+    (intro 'fun #f)
+    (list (inference (coloured (sequent (list (: (ref 'x) (ty 'A))) (: (ref 'x) (ty 'A))) 'black) (rule 'hypo #f) '())))))
 
 (define rules
   (draw (infer-map draw-text
@@ -249,23 +255,25 @@
  })
 
 (define slide-list
-  `((help , (list help))
-    (test . ,(list test-slide))
-    (a-proof . ,(list (draw-proof-logicy a-proof)))
-    (symbols . ,(list symbols))
-    (sequents . ,(list sequents))
-    (rules . ,(list rules))
-    (proptypes . ,(list proptypes))
-    (translation . ,(list translation))
-    (lang . , (list lang))
-    (axioms . ,(list (draw-rules axioms)))
+  `((help ,help)
+    (test ,test-slide)
+    (a-proof ,(draw-proof-logicy a-proof))
+    (symbols ,symbols)
+    (sequents ,sequents)
+    (rules ,rules)
+    (proptypes ,proptypes)
+    (translation ,translation)
+    (a-proof-typey ,(draw-proof-typey a-proof))
+    (lang ,lang)
+    (axioms ,(draw-rules axioms))
     (hypo-examples . ,hypo-examples)
-    (structural-rules . ,(list (draw-rules struct-rules)))
+    (structural-rules ,(draw-rules struct-rules))
     (weakening-examples . ,weakening-examples)
-    (function-rules . ,(list (draw-rules fun-rules)))
-    (product-rules . ,(list (draw-rules prod-rules)))
-    (sum-rules . ,(list (draw-rules sum-rules)))
-    (cheat . ,(list cheat))))
+    (function-rules ,(draw-rules fun-rules))
+    (function-example ,function-example)
+    (product-rules ,(draw-rules prod-rules))
+    (sum-rules ,(draw-rules sum-rules))
+    (cheat ,cheat)))
 
 (define slides (make-immutable-hash slide-list))
 

@@ -155,7 +155,9 @@
          "λp.λs.case s of left x => (fst p) x | right x => (fst p) x")
 
   (check "((A -> A) -> A -> A) -> ((A -> A) -> A -> A)"
-         "λn.λf.λx.f (n f x)"))
+         "λn.λf.λx.f (n f x)")
+  (check-txt "A -> A"
+             "λx.x"))
 
   
 
