@@ -196,6 +196,12 @@
      | right x2 => u3
  })
 
+(define belt-and-suspenders
+  @~a{
+ Well-typed programs cannot go wrong.
+ They also cannot go wrong if they cannot go at all.
+ })
+
 (define help
   @~a{
  C-e to send some stuff to the Racket-program.
@@ -273,6 +279,7 @@
     (function-example ,function-example)
     (product-rules ,(draw-rules prod-rules))
     (sum-rules ,(draw-rules sum-rules))
+    (belt-and-suspenders ,belt-and-suspenders)
     (cheat ,cheat)))
 
 (define slides (make-immutable-hash slide-list))
