@@ -189,8 +189,8 @@
    fst u                 first projection
    snd u                 second projection
    
-   left u                left injection, A + B
-   right u               right injection, A + B
+   left u                left injection, : A + B
+   right u               right injection, : A + B
    case u1 of            case analysis
        left x1 => u2
      | right x2 => u3
