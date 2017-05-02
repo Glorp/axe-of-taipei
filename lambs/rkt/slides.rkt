@@ -198,6 +198,10 @@
 
 (define belt-and-suspenders
   @~a{
+ A Theory of Type Polymorphism in Programming
+ Robin Milner
+ http://tfeng.me/papers/milner78theory.pdf
+ 
  Well-typed programs cannot go wrong.
  They also cannot go wrong if they cannot go at all.
  })
