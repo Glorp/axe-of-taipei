@@ -22,6 +22,6 @@
 (module+ test
   (require rackunit)
   (check-equal? (unify (prod (wild) 'x) (prod (fun 'a 'b) 'x))
-                (fun (fun 'a 'b) 'x))
+                (prod (fun 'a 'b) 'x))
   (check-equal? (unify (prod (wild) 'x) (prod (fun 'a 'b) 'y))
                 #f))

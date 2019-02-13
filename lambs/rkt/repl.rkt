@@ -5,10 +5,7 @@
          "draw-proof.rkt"
          (only-in "draw.rkt" draw-text)
          "structs.rkt"
-         "symbols.rkt"
          "parse.rkt"
-         "unparse.rkt"
-         "infer-structs.rkt"
          "slides.rkt"
          (only-in 2htdp/image scale image?))
 
@@ -40,9 +37,11 @@
 
 (define ((write-stuff img scal) x)
   (write 
-   (cond [(image? x) (img (scale scal x))]
-         [(string? x) x]
-         [else (~a x)])))
+   (match x
+     [(? image?) (img (scale scal x))]
+     [(? string?) x]
+     [(image-path s) `(img ,s)]
+     [_ (~a x)])))
 
 (define (repl img [scal 3/2] [draw-sym 'typey])
   ((write-stuff img scal) (format "#:scale ~a~n~n#:drawings ~a" scal draw-sym))

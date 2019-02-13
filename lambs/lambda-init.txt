@@ -17,7 +17,7 @@ C-e with cursor on the #:slide help-line below for more instructions.
 
 
 
-#:slide a-proof
+#:slide agenda
 
 
 
@@ -26,6 +26,10 @@ C-e with cursor on the #:slide help-line below for more instructions.
 
 
 #:slide sequents
+
+
+
+#:slide tree-like
 
 
 
@@ -42,10 +46,6 @@ C-e with cursor on the #:slide help-line below for more instructions.
 
 
 #:slide a-proof-typey
-
-
-
-#:slide lang
 
 
 
@@ -73,7 +73,19 @@ C-e with cursor on the #:slide help-line below for more instructions.
 
 
 
+#:slide lang
+
+
+
+#:slide termy
+
+
+
 #:slide product-rules
+
+
+
+#:slide for-people
 
 
 
@@ -81,6 +93,7 @@ C-e with cursor on the #:slide help-line below for more instructions.
 
 
 
+#:slide agenda
 
 
 
@@ -91,31 +104,4 @@ C-e with cursor on the #:slide help-line below for more instructions.
 
 
 
-
-#:slide belt-and-suspenders
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#:slide go-wrong

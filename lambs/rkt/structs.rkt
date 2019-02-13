@@ -16,7 +16,8 @@
          (struct-out ty)
          (struct-out wild)
          (struct-out :)
-         (struct-out sequent))
+         (struct-out sequent)
+         (struct-out image-path))
 
 (struct lam (p x) #:transparent)
 (struct app (f a) #:transparent)
@@ -63,3 +64,5 @@
 
 (struct : (term type) #:transparent)
 (struct sequent (antecedents consequent) #:transparent)
+
+(struct image-path (path) #:transparent)
