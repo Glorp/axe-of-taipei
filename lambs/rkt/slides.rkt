@@ -160,24 +160,24 @@
  We can describe Howard’s observation as follows:
 
  • Conjunction A & B corresponds to Cartesian product A × B,
- that is, a record with two fields, also known as a pair. A proof
- of the proposition A & B consists of a proof of A and a proof of
- B. Similarly, a value of type A × B consists of a value of type
- A and a value of type B.
+   that is, a record with two fields, also known as a pair. A proof
+   of the proposition A & B consists of a proof of A and a proof of
+   B. Similarly, a value of type A × B consists of a value of type
+   A and a value of type B.
    
  • Disjunction A ∨ B corresponds to a disjoint sum A + B, that
- is, a variant with two alternatives. A proof of the proposition
- A ∨ B consists of either a proof of A or a proof of B, including
- an indication of which of the two has been proved. Similarly, a
- value of type A + B consists of either a value of type A or a
- value of type B, including an indication of whether this is a left
- or right summand.
+   is, a variant with two alternatives. A proof of the proposition
+   A ∨ B consists of either a proof of A or a proof of B, including
+   an indication of which of the two has been proved. Similarly, a
+   value of type A + B consists of either a value of type A or a
+   value of type B, including an indication of whether this is a left
+   or right summand.
    
  • Implication A ⊃ B corresponds to function space A → B. A
- proof of the proposition A ⊃ B consists of a procedure that
- given a proof of A yields a proof of B. Similarly, a value of
- type A → B consists of a function that when applied to a value
- of type A returns a value of type B.
+   proof of the proposition A ⊃ B consists of a procedure that
+   given a proof of A yields a proof of B. Similarly, a value of
+   type A → B consists of a function that when applied to a value
+   of type A returns a value of type B.
  })
 
 (define translation
@@ -192,20 +192,20 @@
   @~a{
  and we will program in a language that works something like,
  Exp u :=
- x                     variable
+   x                     variable
    
- λx.u                  abstraction, : A → B
- u1 u2                 application
+   λx.u                  abstraction, : A → B
+   u1 u2                 application
    
- (u1, u2)              pair/tuple, : A × B
- fst u                 first projection
- snd u                 second projection
+   (u1, u2)              pair/tuple, : A × B
+   fst u                 first projection
+   snd u                 second projection
    
- left u                left injection, : A + B
- right u               right injection, : A + B
- case u1 of            case analysis
- left x1 => u2
- | right x2 => u3
+   left u                left injection, : A + B
+   right u               right injection, : A + B
+   case u1 of            case analysis
+       left x1 => u2
+     | right x2 => u3
  })
 
 (define go-wrong
@@ -279,8 +279,8 @@
 
  (A -> C) * (B -> C) -> A + B -> C
  λp.λs.case s of
- left x => (fst p) x
- | right x => (snd p) x
+           left x => (fst p) x
+         | right x => (snd p) x
  })
 
 (define for-people
@@ -309,6 +309,7 @@
     (weakening-examples . ,weakening-examples)
     (function-rules ,(draw-rules fun-rules))
     (function-example ,function-example)
+    (termy ,termy)
     (for-people ,for-people)
     (product-rules ,(draw-rules prod-rules))
     (sum-rules ,(draw-rules sum-rules))
