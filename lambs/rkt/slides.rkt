@@ -133,14 +133,19 @@
  })
 
 (define tree-like
-  @~a{
+  (list
+   @~a{
  Wikipedia also says:
  "Gentzen's discharging annotations used to internalise hypothetical judgments can be avoided by
  representing proofs as a tree of sequents Γ ⊢ A instead of a tree of A true judgments."
  https://en.wikipedia.org/wiki/Natural_deduction#Tree-like_presentations
 
  we're doing something like that probably.
-})
+
+ compare our implication introduction rule with
+ e.g. the one at slide 24 in Wadler's talk
+}
+   (draw-proof-logicy function-intro)))
 
 (define symbols
   @~a{
@@ -293,11 +298,13 @@
   `((help ,help)
     (test ,test-slide)
     (axe "Frank Pfenning at the Oregon Programming Languages Summer School:"
-         ,(image-path "../axe.jpg"))
+         ,(image-path "../axe.jpg")
+         "And like I dunno so that's the name of the repo I guess?"
+         "https://github.com/Glorp/axe-of-taipei")
     (agenda ,(draw-proof-logicy a-proof))
     (symbols ,symbols)
     (sequents ,sequents)
-    (tree-like ,tree-like)
+    (tree-like . ,tree-like)
     (rules ,rules)
     (proptypes ,proptypes)
     (translation ,translation)

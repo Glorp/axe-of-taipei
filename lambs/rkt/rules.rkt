@@ -4,7 +4,8 @@
          prod-rules
          sum-rules
          draw-rules
-         axioms)
+         axioms
+         function-intro)
 
 (require "infer-structs.rkt"
          "structs.rkt"
